@@ -48,7 +48,10 @@ async Task processMapAsync()
 
     map.LoadFromTiled(tiledFile, options.InputFile);
 
-    string uncompressedMapPath = Path.Combine(Path.GetDirectoryName(options.OutputFile), Path.GetFileNameWithoutExtension(options.OutputFile) + "_temp.bin");
+    string? outputDirectory = Path.GetDirectoryName(options.OutputFile);
+    string uncompressedMapPath = Path.GetFileNameWithoutExtension(options.OutputFile) + "_temp.bin";
+    if (!string.IsNullOrWhiteSpace(outputDirectory))
+        uncompressedMapPath = Path.Combine(outputDirectory, uncompressedMapPath);
     map.Save(uncompressedMapPath);
 
     Directory.CreateDirectory("Temporary");

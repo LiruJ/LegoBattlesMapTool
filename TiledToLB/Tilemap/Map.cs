@@ -189,7 +189,10 @@ namespace TiledToLB.Tilemap
         #region Save Functions
         public void Save(string filePath)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            string? outputDirectory = Path.GetDirectoryName(filePath);
+            if (!string.IsNullOrWhiteSpace(outputDirectory))
+                Directory.CreateDirectory(outputDirectory);
+
             using FileStream mapFile = File.Create(filePath);
             using BinaryWriter mapWriter = new(mapFile);
 
