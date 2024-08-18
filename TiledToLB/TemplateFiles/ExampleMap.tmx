@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="24" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="76">
+ <properties>
+  <property name="Name" value="Example"/>
+  <property name="Tileset" propertytype="Tileset" value="KingTileset"/>
+ </properties>
+ <tileset firstgid="1" source="KingTileset.tsx"/>
+ <layer id="1" name="Details" width="32" height="32">
+  <data encoding="csv">
+126,117,117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,121,131,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,97,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,97,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,97,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,97,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,97,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,97,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,97,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,97,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,133,123,97,97,97,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,97,97,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,97,97,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,97,97,121,131,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,97,97,97,121,131,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,133,123,97,97,97,97,97,97,121,122,131,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,97,97,97,97,97,97,97,121,122,122,131,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,133,122,123,97,97,97,97,97,97,97,97,97,97,97,97,121,122,122,131,117,117,117,
+122,122,122,122,122,122,122,122,122,122,123,97,97,97,97,97,14,15,97,97,97,97,97,97,97,97,97,97,121,122,122,122,
+97,97,97,97,97,97,97,97,97,97,97,97,97,97,97,97,19,20,97,97,97,97,97,97,97,97,97,97,97,97,97,97,
+97,97,97,97,97,97,97,97,97,97,97,97,97,97,97,97,97,97,97,97,97,97,97,97,97,97,111,112,112,112,112,113,
+112,112,112,112,112,112,112,112,112,112,112,113,97,97,97,97,97,97,97,97,97,97,97,111,112,112,126,117,117,117,117,128,
+117,117,117,117,117,117,117,117,117,117,117,128,113,97,97,97,97,97,97,97,97,97,111,126,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,128,113,97,97,97,97,97,97,97,111,126,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,97,97,97,97,111,126,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,128,113,109,102,108,111,112,126,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,117,118,98,65,96,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,117,118,232,65,231,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,117,118,139,65,137,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,117,118,139,65,137,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,117,118,237,65,236,116,117,117,117,117,117,117,117,117,117,117,117,117,117,
+117,117,117,117,117,117,117,117,117,117,117,117,117,117,118,98,65,96,116,117,117,117,117,117,117,117,117,117,117,117,117,133,
+117,117,117,117,117,117,117,117,117,117,117,117,117,117,118,98,65,96,116,117,117,117,117,117,117,117,117,117,117,117,117,128
+</data>
+ </layer>
+ <layer id="5" name="Trees" width="32" height="32" opacity="0.48">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7,0,0,
+0,7,7,7,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7,0,0,
+0,7,7,7,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7,0,0,
+0,7,7,7,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7,7,0,0,
+0,7,7,7,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7,7,0,0,
+0,7,7,7,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,7,7,7,0,0,0,0,0,7,7,7,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,7,7,7,0,0,0,0,0,7,7,7,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,7,7,7,0,0,0,0,0,7,7,7,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,7,7,7,0,0,0,0,0,7,7,7,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,7,7,7,0,0,0,0,0,7,7,7,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,7,7,7,0,0,0,0,0,7,7,7,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,7,7,7,0,0,0,0,0,7,7,7,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="4" name="Bridges" visible="0">
+  <object id="22" type="Bridge" x="360" y="432" width="72" height="32">
+   <properties>
+    <property name="IsHorizontal" type="bool" value="true"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="3" name="Entities">
+  <object id="9" type="Entity" x="168" y="384" width="72" height="48">
+   <properties>
+    <property name="Type" type="int" propertytype="EntityType" value="7"/>
+   </properties>
+  </object>
+  <object id="16" type="Entity" x="192" y="336" width="48" height="32">
+   <properties>
+    <property name="Type" type="int" propertytype="EntityType" value="10"/>
+   </properties>
+  </object>
+  <object id="17" type="Entity" x="24" y="384" width="48" height="32">
+   <properties>
+    <property name="Type" type="int" propertytype="EntityType" value="10"/>
+   </properties>
+  </object>
+  <object id="18" type="Entity" x="182" y="460.5">
+   <properties>
+    <property name="Type" type="int" propertytype="EntityType" value="1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="19" type="Entity" x="204.75" y="443.75">
+   <point/>
+  </object>
+  <object id="20" type="Entity" x="228.5" y="460.75">
+   <properties>
+    <property name="Type" type="int" propertytype="EntityType" value="1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="21" type="Entity" x="24" y="432" width="48" height="32">
+   <properties>
+    <property name="Type" type="int" propertytype="EntityType" value="11"/>
+   </properties>
+  </object>
+  <object id="29" type="Entity" x="396" y="304">
+   <properties>
+    <property name="Type" type="int" propertytype="EntityType" value="20"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="38" type="Entity" x="144" y="112" width="72" height="48">
+   <properties>
+    <property name="TeamIndex" type="int" value="2"/>
+    <property name="Type" type="int" propertytype="EntityType" value="7"/>
+   </properties>
+  </object>
+  <object id="39" type="Entity" x="240" y="128" width="48" height="32">
+   <properties>
+    <property name="TeamIndex" type="int" value="2"/>
+    <property name="Type" type="int" propertytype="EntityType" value="10"/>
+   </properties>
+  </object>
+  <object id="40" type="Entity" x="24" y="48" width="48" height="32">
+   <properties>
+    <property name="TeamIndex" type="int" value="2"/>
+    <property name="Type" type="int" propertytype="EntityType" value="10"/>
+   </properties>
+  </object>
+  <object id="41" type="Entity" x="156" y="188">
+   <properties>
+    <property name="TeamIndex" type="int" value="2"/>
+    <property name="Type" type="int" propertytype="EntityType" value="1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="42" type="Entity" x="180" y="172">
+   <properties>
+    <property name="TeamIndex" type="int" value="2"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="43" type="Entity" x="204" y="188">
+   <properties>
+    <property name="TeamIndex" type="int" value="2"/>
+    <property name="Type" type="int" propertytype="EntityType" value="1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="44" type="Entity" x="96" y="16" width="48" height="32">
+   <properties>
+    <property name="TeamIndex" type="int" value="2"/>
+    <property name="Type" type="int" propertytype="EntityType" value="11"/>
+   </properties>
+  </object>
+  <object id="45" type="Entity" x="528" y="96" width="72" height="48">
+   <properties>
+    <property name="TeamIndex" type="int" value="1"/>
+    <property name="Type" type="int" propertytype="EntityType" value="7"/>
+   </properties>
+  </object>
+  <object id="46" type="Entity" x="528" y="160" width="48" height="32">
+   <properties>
+    <property name="TeamIndex" type="int" value="1"/>
+    <property name="Type" type="int" propertytype="EntityType" value="10"/>
+   </properties>
+  </object>
+  <object id="47" type="Entity" x="648" y="16" width="48" height="32">
+   <properties>
+    <property name="TeamIndex" type="int" value="1"/>
+    <property name="Type" type="int" propertytype="EntityType" value="10"/>
+   </properties>
+  </object>
+  <object id="48" type="Entity" x="492" y="108">
+   <properties>
+    <property name="TeamIndex" type="int" value="1"/>
+    <property name="Type" type="int" propertytype="EntityType" value="1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="49" type="Entity" x="516" y="124">
+   <properties>
+    <property name="TeamIndex" type="int" value="1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="50" type="Entity" x="492" y="140">
+   <properties>
+    <property name="TeamIndex" type="int" value="1"/>
+    <property name="Type" type="int" propertytype="EntityType" value="1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="51" type="Entity" x="696" y="64" width="48" height="32">
+   <properties>
+    <property name="TeamIndex" type="int" value="1"/>
+    <property name="Type" type="int" propertytype="EntityType" value="11"/>
+   </properties>
+  </object>
+  <object id="52" type="Entity" x="624" y="368" width="72" height="48">
+   <properties>
+    <property name="TeamIndex" type="int" value="3"/>
+    <property name="Type" type="int" propertytype="EntityType" value="7"/>
+   </properties>
+  </object>
+  <object id="53" type="Entity" x="624" y="448" width="48" height="32">
+   <properties>
+    <property name="TeamIndex" type="int" value="3"/>
+    <property name="Type" type="int" propertytype="EntityType" value="10"/>
+   </properties>
+  </object>
+  <object id="54" type="Entity" x="552" y="368" width="48" height="32">
+   <properties>
+    <property name="TeamIndex" type="int" value="3"/>
+    <property name="Type" type="int" propertytype="EntityType" value="10"/>
+   </properties>
+  </object>
+  <object id="55" type="Entity" x="636" y="348">
+   <properties>
+    <property name="TeamIndex" type="int" value="3"/>
+    <property name="Type" type="int" propertytype="EntityType" value="1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="56" type="Entity" x="660" y="364">
+   <properties>
+    <property name="TeamIndex" type="int" value="3"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="57" type="Entity" x="684" y="348">
+   <properties>
+    <property name="TeamIndex" type="int" value="3"/>
+    <property name="Type" type="int" propertytype="EntityType" value="1"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="58" type="Entity" x="552" y="448" width="48" height="32">
+   <properties>
+    <property name="TeamIndex" type="int" value="3"/>
+    <property name="Type" type="int" propertytype="EntityType" value="11"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="2" name="Mines" visible="0">
+  <object id="35" x="384" y="272" width="48" height="32"/>
+ </objectgroup>
+ <objectgroup id="8" name="Markers" visible="0">
+  <object id="69" x="276" y="216">
+   <point/>
+  </object>
+  <object id="70" x="486" y="180">
+   <point/>
+  </object>
+  <object id="71" x="312" y="500">
+   <point/>
+  </object>
+  <object id="72" x="474" y="504">
+   <point/>
+  </object>
+ </objectgroup>
+</map>

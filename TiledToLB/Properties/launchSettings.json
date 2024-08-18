@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "ProcessMap": {
+      "commandName": "Project",
+      "commandLineArgs": "-i \"G:\\Projects\\Scratch\\OpenLegoBattles\\MapEditor\\MapFiles\\TestMap.tmx\" -o \"mp22.map\""
+    },
+    "UnpackRom": {
+      "commandName": "Project",
+      "commandLineArgs": "-r \"G:\\Projects\\Game Dev\\OpenLegoBattles\\ContentUnpacker\\LEGO Battles.nds\" -t \"Template\""
+    }
+  }
+}
