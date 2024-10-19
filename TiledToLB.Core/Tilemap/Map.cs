@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using System.Xml;
 
-namespace TiledToLB.Tilemap
+namespace TiledToLB.Core.Tilemap
 {
-
-    internal class Map
+    public class Map
     {
         #region Layers
         public TilesetTile[,] DetailLayer { get; }

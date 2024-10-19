@@ -1,8 +1,8 @@
 ﻿using System.Xml;
 
-namespace TiledToLB.Tilemap
+namespace TiledToLB.Core.Tilemap
 {
-    internal class EntityData
+    public class EntityData
     {
         #region Properties
         public byte X { get; }
@@ -76,7 +76,7 @@ namespace TiledToLB.Tilemap
                 mapWriter.Write((byte)1);
                 mapWriter.Write((byte)1);
             }
-            
+
         }
         #endregion
     }

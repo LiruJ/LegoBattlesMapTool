@@ -1,8 +1,8 @@
 ﻿using System.Xml;
 
-namespace TiledToLB.Tilemap
+namespace TiledToLB.Core.Tilemap
 {
-    internal readonly struct TilesetTile
+    public readonly struct TilesetTile
     {
         #region Properties
         public ushort Index { get; }

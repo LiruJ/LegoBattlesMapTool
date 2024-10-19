@@ -1,4 +1,4 @@
-﻿namespace TiledToLB.Tilemap
+﻿namespace TiledToLB.Core.Tilemap
 {
     public enum EntityType : byte
     {

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
+﻿using System.Xml;
 
-namespace TiledToLB.Tilemap
+namespace TiledToLB.Core.Tilemap
 {
-    internal class Tileset
+    public class Tileset
     {
         #region Backing Fields
         private readonly TilesetTile[] tilesetData;
