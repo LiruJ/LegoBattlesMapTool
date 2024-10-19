@@ -47,9 +47,9 @@ Failure to include all of these layers in the map may cause the tool to not func
 
 The map properties (Map>Properties in the toolbar to open it in the properties window) includes two unused custom properties, that are planned for future features:
 * Name: This will be used to replace the localised map name in the game.
-*  Tileset: This enum will allow you to change what type of tileset is being used.
+* Tileset: This enum will allow you to change what type of tileset is being used.
 
-When you are done editing the map, you can run the tool on the map file in processing mode to create the .map file. You can then use a tool such as [CrystalTile](https://www.romhacking.net/utilities/818/) to import the map into the game. You must replace an existing freeplay map (named like "mp01.map), ensure the map you are replacing is the same size as the new map (e.g. only replace 96x96 maps with other 96x96 maps). You can then load up the game, select the replaced map, and it will instead load your custom map.
+When you are done editing the map, you can run the tool on the map file in processing mode to create the .map file. You can then use a tool such as [CrystalTile](https://www.romhacking.net/utilities/818/) to import the map into the game. You must replace an existing freeplay map (named like "mp01.map). You can then load up the game, select the replaced map, and it will instead load your custom map. There are also 4 minimap files that are generated, replace the files in the ROM with these files the same way as the main map.
 
 ### Placing Markers
 * Markers are not too useful for multiplayer, but ensure AI opponents can function.
@@ -87,7 +87,6 @@ When you are done editing the map, you can run the tool on the map file in proce
 ## Planned Features
 * Map names. It is currently not decided how this will be done, as it requires the localisation files of the game to be edited.
 * The other two tilesets.
-* Minimap generation. This is a big one, but requires generation of NDS graphical files.
 * Integrated ROM patching. Ideally this would circumvent any map size mismatch issues, as well as remove a step in the workflow.
 ## Credits
 * CUE as always for the LZX compression tools.
