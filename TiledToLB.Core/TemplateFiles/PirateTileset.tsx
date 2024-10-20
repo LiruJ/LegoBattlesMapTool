@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.11.0" name="KingTileset" tilewidth="24" tileheight="16" tilecount="400" columns="20">
- <transformations hflip="0" vflip="0" rotate="0" preferuntransformed="1"/>
- <image source="KingTiles.png" width="480" height="320"/>
+<tileset version="1.10" tiledversion="1.11.0" name="PirateTileset" tilewidth="24" tileheight="16" tilecount="400" columns="20">
+ <image source="PirateTiles.png" width="480" height="320"/>
  <tile id="13" type="TypedTile">
   <properties>
    <property name="Type" type="int" propertytype="TileType" value="2"/>
@@ -67,17 +66,17 @@
    <property name="Type" type="int" propertytype="TileType" value="5"/>
   </properties>
  </tile>
- <tile id="123" type="TypedTile">
+ <tile id="98" type="TypedTile">
   <properties>
    <property name="Type" type="int" propertytype="TileType" value="5"/>
   </properties>
  </tile>
- <tile id="124" type="TypedTile">
+ <tile id="103" type="TypedTile">
   <properties>
    <property name="Type" type="int" propertytype="TileType" value="5"/>
   </properties>
  </tile>
- <tile id="39" type="TypedTile">
+ <tile id="68" type="TypedTile">
   <properties>
    <property name="Type" type="int" propertytype="TileType" value="5"/>
   </properties>
@@ -147,31 +146,11 @@
    <property name="Type" type="int" propertytype="TileType" value="5"/>
   </properties>
  </tile>
- <tile id="128" type="TypedTile">
-  <properties>
-   <property name="Type" type="int" propertytype="TileType" value="5"/>
-  </properties>
- </tile>
- <tile id="129" type="TypedTile">
-  <properties>
-   <property name="Type" type="int" propertytype="TileType" value="5"/>
-  </properties>
- </tile>
- <tile id="44" type="TypedTile">
-  <properties>
-   <property name="Type" type="int" propertytype="TileType" value="5"/>
-  </properties>
- </tile>
- <tile id="170" type="TypedTile">
-  <properties>
-   <property name="Type" type="int" propertytype="TileType" value="5"/>
-  </properties>
- </tile>
- <tile id="171" type="TypedTile">
-  <properties>
-   <property name="Type" type="int" propertytype="TileType" value="5"/>
-  </properties>
- </tile>
+ <tile id="219" type="TypedTile"/>
+ <tile id="222" type="TypedTile"/>
+ <tile id="245" type="TypedTile"/>
+ <tile id="237" type="TypedTile"/>
+ <tile id="234" type="TypedTile"/>
  <tile id="120" type="TypedTile"/>
  <tile id="121" type="TypedTile"/>
  <tile id="122" type="TypedTile"/>
@@ -217,11 +196,11 @@
    <property name="Type" type="int" propertytype="TileType" value="5"/>
   </properties>
  </tile>
- <tile id="148"/>
- <tile id="153"/>
- <tile id="151"/>
- <tile id="152"/>
- <tile id="154"/>
+ <tile id="266" type="TypedTile"/>
+ <tile id="268" type="TypedTile"/>
+ <tile id="247" type="TypedTile"/>
+ <tile id="244" type="TypedTile"/>
+ <tile id="267" type="TypedTile"/>
  <tile id="90" type="TypedTile">
   <properties>
    <property name="Type" type="int" propertytype="TileType" value="3"/>
@@ -292,12 +271,24 @@
    <property name="Type" type="int" propertytype="TileType" value="3"/>
   </properties>
  </tile>
- <tile id="240"/>
- <tile id="249"/>
- <tile id="268"/>
- <tile id="247"/>
- <tile id="165" type="TypedTile"/>
- <tile id="245"/>
+ <tile id="156" type="TypedTile">
+  <properties>
+   <property name="Type" type="int" propertytype="TileType" value="3"/>
+  </properties>
+ </tile>
+ <tile id="163"/>
+ <tile id="147"/>
+ <tile id="157" type="TypedTile">
+  <properties>
+   <property name="Type" type="int" propertytype="TileType" value="3"/>
+  </properties>
+ </tile>
+ <tile id="169" type="TypedTile">
+  <properties>
+   <property name="Type" type="int" propertytype="TileType" value="3"/>
+  </properties>
+ </tile>
+ <tile id="44" type="TypedTile"/>
  <tile id="95" type="TypedTile">
   <properties>
    <property name="Type" type="int" propertytype="TileType" value="3"/>
@@ -368,12 +359,24 @@
    <property name="Type" type="int" propertytype="TileType" value="3"/>
   </properties>
  </tile>
- <tile id="267"/>
- <tile id="257"/>
- <tile id="253"/>
- <tile id="3"/>
- <tile id="274"/>
- <tile id="265"/>
+ <tile id="148"/>
+ <tile id="162" type="TypedTile">
+  <properties>
+   <property name="Type" type="int" propertytype="TileType" value="3"/>
+  </properties>
+ </tile>
+ <tile id="4" type="TypedTile"/>
+ <tile id="164"/>
+ <tile id="170" type="TypedTile">
+  <properties>
+   <property name="Type" type="int" propertytype="TileType" value="2"/>
+  </properties>
+ </tile>
+ <tile id="165" type="TypedTile">
+  <properties>
+   <property name="Type" type="int" propertytype="TileType" value="2"/>
+  </properties>
+ </tile>
  <tile id="100" type="TypedTile">
   <properties>
    <property name="Type" type="int" propertytype="TileType" value="3"/>
@@ -394,7 +397,7 @@
    <property name="Type" type="int" propertytype="TileType" value="3"/>
   </properties>
  </tile>
- <tile id="158"/>
+ <tile id="152"/>
  <tile id="137" type="TypedTile">
   <properties>
    <property name="Type" type="int" propertytype="TileType" value="3"/>
@@ -405,61 +408,115 @@
    <property name="Type" type="int" propertytype="TileType" value="3"/>
   </properties>
  </tile>
+ <tile id="253" type="TypedTile"/>
+ <tile id="9" type="TypedTile"/>
+ <tile id="254" type="TypedTile"/>
  <tile id="144"/>
- <tile id="119"/>
- <tile id="118"/>
- <tile id="68"/>
+ <tile id="3"/>
+ <tile id="232"/>
+ <tile id="242"/>
+ <tile id="258"/>
+ <tile id="240"/>
+ <tile id="241"/>
+ <tile id="168"/>
+ <tile id="8"/>
+ <tile id="158" type="TypedTile"/>
+ <tile id="299" type="TypedTile"/>
+ <tile id="159" type="TypedTile"/>
+ <tile id="128" type="TypedTile"/>
+ <tile id="166" type="TypedTile">
+  <properties>
+   <property name="Type" type="int" propertytype="TileType" value="3"/>
+  </properties>
+ </tile>
+ <tile id="167" type="TypedTile">
+  <properties>
+   <property name="Type" type="int" propertytype="TileType" value="3"/>
+  </properties>
+ </tile>
+ <tile id="259" type="TypedTile"/>
+ <tile id="205" type="TypedTile">
+  <properties>
+   <property name="Type" type="int" propertytype="TileType" value="2"/>
+  </properties>
+ </tile>
+ <tile id="39" type="TypedTile"/>
+ <tile id="173" type="TypedTile"/>
  <tile id="134"/>
- <tile id="150"/>
- <tile id="145"/>
- <tile id="140"/>
- <tile id="143"/>
- <tile id="141"/>
+ <tile id="296"/>
+ <tile id="49"/>
+ <tile id="50"/>
+ <tile id="51"/>
+ <tile id="37"/>
+ <tile id="36"/>
+ <tile id="11"/>
+ <tile id="12"/>
+ <tile id="55"/>
+ <tile id="271"/>
+ <tile id="56"/>
+ <tile id="57"/>
+ <tile id="17"/>
+ <tile id="60"/>
+ <tile id="61"/>
  <tile id="142"/>
- <tile id="146"/>
+ <tile id="62"/>
+ <tile id="63"/>
+ <tile id="65"/>
+ <tile id="66"/>
+ <tile id="67"/>
+ <tile id="35"/>
+ <tile id="70"/>
+ <tile id="71"/>
+ <tile id="72"/>
  <tile id="73"/>
  <tile id="75"/>
  <tile id="76"/>
- <tile id="78"/>
  <tile id="77"/>
+ <tile id="15"/>
+ <tile id="16"/>
+ <tile id="78"/>
  <tile id="83"/>
- <tile id="88"/>
- <tile id="93"/>
- <tile id="98"/>
- <tile id="103"/>
- <tile id="70"/>
- <tile id="47"/>
- <tile id="149"/>
- <tile id="114"/>
+ <tile id="146"/>
+ <tile id="161" type="TypedTile">
+  <properties>
+   <property name="Type" type="int" propertytype="TileType" value="3"/>
+  </properties>
+ </tile>
+ <tile id="297"/>
+ <tile id="151"/>
+ <tile id="21"/>
+ <tile id="154"/>
+ <tile id="118" type="TypedTile"/>
+ <tile id="113" type="TypedTile"/>
  <tile id="155"/>
- <tile id="156"/>
- <tile id="252"/>
- <tile id="276"/>
- <tile id="157"/>
- <tile id="159"/>
- <tile id="160" type="TypedTile"/>
- <tile id="161"/>
- <tile id="162"/>
- <tile id="163"/>
- <tile id="164"/>
- <tile id="166"/>
- <tile id="167"/>
- <tile id="168"/>
- <tile id="169"/>
- <tile id="30"/>
- <tile id="258"/>
- <tile id="254"/>
+ <tile id="32"/>
+ <tile id="38"/>
+ <tile id="34"/>
+ <tile id="26"/>
+ <tile id="10"/>
+ <tile id="29"/>
+ <tile id="153"/>
+ <tile id="22"/>
+ <tile id="140"/>
+ <tile id="2"/>
+ <tile id="1"/>
+ <tile id="25"/>
+ <tile id="31"/>
+ <tile id="7"/>
  <tile id="172"/>
- <tile id="173"/>
- <tile id="63"/>
- <tile id="174"/>
+ <tile id="33"/>
+ <tile id="88"/>
  <tile id="175"/>
  <tile id="176"/>
  <tile id="177"/>
  <tile id="178"/>
+ <tile id="0"/>
  <tile id="179"/>
  <tile id="180"/>
+ <tile id="24"/>
  <tile id="181"/>
+ <tile id="171"/>
+ <tile id="45"/>
  <tile id="182"/>
  <tile id="183"/>
  <tile id="184"/>
@@ -468,128 +525,112 @@
  <tile id="187"/>
  <tile id="188"/>
  <tile id="189"/>
+ <tile id="206"/>
+ <tile id="207"/>
  <tile id="208"/>
  <tile id="209"/>
+ <tile id="210"/>
+ <tile id="211"/>
+ <tile id="212"/>
  <tile id="213"/>
- <tile id="147"/>
- <tile id="65"/>
- <tile id="61"/>
- <tile id="62"/>
- <tile id="49"/>
  <tile id="214"/>
+ <tile id="215"/>
+ <tile id="216"/>
+ <tile id="217"/>
  <tile id="218"/>
- <tile id="219"/>
- <tile id="222"/>
  <tile id="223"/>
  <tile id="224"/>
- <tile id="228"/>
  <tile id="227"/>
+ <tile id="228"/>
  <tile id="229"/>
- <tile id="232"/>
+ <tile id="160" type="TypedTile">
+  <properties>
+   <property name="Type" type="int" propertytype="TileType" value="2"/>
+  </properties>
+ </tile>
+ <tile id="28"/>
+ <tile id="43"/>
+ <tile id="20"/>
  <tile id="233"/>
- <tile id="234"/>
- <tile id="237"/>
  <tile id="238"/>
  <tile id="239"/>
- <tile id="241"/>
- <tile id="66"/>
- <tile id="71"/>
- <tile id="67"/>
- <tile id="242"/>
- <tile id="36"/>
- <tile id="35"/>
- <tile id="33"/>
- <tile id="9"/>
  <tile id="243"/>
- <tile id="244"/>
- <tile id="0"/>
- <tile id="1"/>
- <tile id="2"/>
- <tile id="246"/>
- <tile id="248"/>
- <tile id="51"/>
- <tile id="250"/>
- <tile id="4"/>
- <tile id="52"/>
- <tile id="72"/>
- <tile id="259"/>
- <tile id="16"/>
- <tile id="262"/>
  <tile id="5"/>
+ <tile id="246"/>
+ <tile id="129" type="TypedTile"/>
+ <tile id="248"/>
+ <tile id="249"/>
+ <tile id="250"/>
+ <tile id="251"/>
+ <tile id="252"/>
+ <tile id="27"/>
+ <tile id="41"/>
+ <tile id="255"/>
+ <tile id="40"/>
+ <tile id="30"/>
+ <tile id="256"/>
+ <tile id="257"/>
+ <tile id="52"/>
+ <tile id="260"/>
+ <tile id="261"/>
+ <tile id="262"/>
  <tile id="6"/>
- <tile id="7"/>
  <tile id="263"/>
  <tile id="264"/>
- <tile id="42"/>
- <tile id="50"/>
- <tile id="269"/>
- <tile id="32"/>
- <tile id="270"/>
- <tile id="271"/>
- <tile id="31"/>
- <tile id="20"/>
- <tile id="272"/>
- <tile id="25"/>
- <tile id="273"/>
- <tile id="113"/>
- <tile id="266"/>
- <tile id="8"/>
- <tile id="10"/>
- <tile id="11"/>
- <tile id="12"/>
- <tile id="275"/>
- <tile id="29"/>
- <tile id="27"/>
- <tile id="277"/>
- <tile id="34"/>
- <tile id="56"/>
- <tile id="278"/>
  <tile id="279"/>
+ <tile id="145"/>
+ <tile id="265"/>
+ <tile id="23"/>
+ <tile id="47"/>
+ <tile id="269"/>
+ <tile id="46"/>
+ <tile id="270"/>
+ <tile id="42"/>
+ <tile id="272"/>
+ <tile id="124"/>
+ <tile id="293"/>
+ <tile id="287"/>
+ <tile id="274"/>
+ <tile id="174"/>
+ <tile id="123"/>
+ <tile id="275"/>
  <tile id="280"/>
+ <tile id="150"/>
  <tile id="281"/>
+ <tile id="276"/>
+ <tile id="292"/>
+ <tile id="149"/>
+ <tile id="277"/>
  <tile id="282"/>
+ <tile id="119"/>
  <tile id="283"/>
+ <tile id="48"/>
  <tile id="284"/>
+ <tile id="141"/>
  <tile id="285"/>
  <tile id="286"/>
- <tile id="287"/>
  <tile id="288"/>
- <tile id="45"/>
- <tile id="43"/>
- <tile id="46"/>
  <tile id="289"/>
+ <tile id="143"/>
+ <tile id="114"/>
  <tile id="290"/>
- <tile id="28"/>
  <tile id="291"/>
- <tile id="292"/>
- <tile id="57"/>
- <tile id="293"/>
- <tile id="17"/>
+ <tile id="273"/>
  <tile id="294"/>
  <tile id="295"/>
- <tile id="296"/>
- <tile id="297"/>
- <tile id="21"/>
  <tile id="298"/>
- <tile id="22"/>
- <tile id="299"/>
- <tile id="23"/>
  <tile id="300"/>
- <tile id="24"/>
  <tile id="301"/>
+ <tile id="93"/>
+ <tile id="278"/>
  <tile id="302"/>
- <tile id="41"/>
  <tile id="303"/>
  <tile id="304"/>
- <tile id="26"/>
  <tile id="305"/>
- <tile id="37"/>
  <tile id="306"/>
  <tile id="307"/>
- <tile id="40"/>
  <tile id="308"/>
  <tile id="309"/>
- <tile id="55"/>
  <tile id="310"/>
  <tile id="311"/>
  <tile id="312"/>
@@ -600,13 +641,10 @@
  <tile id="317"/>
  <tile id="318"/>
  <tile id="319"/>
- <tile id="48"/>
  <tile id="320"/>
- <tile id="38"/>
  <tile id="321"/>
  <tile id="322"/>
  <tile id="323"/>
- <tile id="60"/>
  <tile id="324"/>
  <tile id="325"/>
  <tile id="326"/>
@@ -638,13 +676,11 @@
  <tile id="352"/>
  <tile id="353"/>
  <tile id="354"/>
- <tile id="261"/>
  <tile id="355"/>
  <tile id="356"/>
  <tile id="357"/>
  <tile id="358"/>
  <tile id="359"/>
- <tile id="15"/>
  <tile id="360"/>
  <tile id="361"/>
  <tile id="362"/>
@@ -660,44 +696,31 @@
  <tile id="372"/>
  <tile id="373"/>
  <tile id="374"/>
- <tile id="210"/>
- <tile id="260"/>
- <tile id="256"/>
- <tile id="255"/>
  <tile id="375"/>
- <tile id="206"/>
- <tile id="205"/>
  <tile id="376"/>
- <tile id="207"/>
- <tile id="251"/>
- <tile id="217"/>
- <tile id="216"/>
- <tile id="215"/>
- <tile id="211"/>
  <tile id="377"/>
- <tile id="212"/>
  <tile id="378"/>
  <tile id="379"/>
- <tile id="380"/>
- <tile id="381"/>
- <tile id="382"/>
- <tile id="383"/>
- <tile id="384"/>
- <tile id="385"/>
- <tile id="386"/>
- <tile id="387"/>
- <tile id="388"/>
- <tile id="389"/>
- <tile id="390"/>
- <tile id="391"/>
- <tile id="392"/>
- <tile id="393"/>
- <tile id="394"/>
- <tile id="395"/>
- <tile id="396"/>
- <tile id="397"/>
- <tile id="398"/>
- <tile id="399"/>
+ <tile id="380" type="TypedTile"/>
+ <tile id="381" type="TypedTile"/>
+ <tile id="382" type="TypedTile"/>
+ <tile id="383" type="TypedTile"/>
+ <tile id="384" type="TypedTile"/>
+ <tile id="385" type="TypedTile"/>
+ <tile id="386" type="TypedTile"/>
+ <tile id="387" type="TypedTile"/>
+ <tile id="388" type="TypedTile"/>
+ <tile id="389" type="TypedTile"/>
+ <tile id="390" type="TypedTile"/>
+ <tile id="391" type="TypedTile"/>
+ <tile id="392" type="TypedTile"/>
+ <tile id="393" type="TypedTile"/>
+ <tile id="394" type="TypedTile"/>
+ <tile id="395" type="TypedTile"/>
+ <tile id="396" type="TypedTile"/>
+ <tile id="397" type="TypedTile"/>
+ <tile id="398" type="TypedTile"/>
+ <tile id="399" type="TypedTile"/>
  <wangsets>
   <wangset name="Terrain" type="mixed" tile="-1">
    <wangcolor name="Mountain" color="#ff0000" tile="-1" probability="1"/>
