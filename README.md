@@ -8,7 +8,6 @@ At the time of creating this tool, Tiled 1.11.0 was the latest. If the tool fail
 
 This tool is only intended for creating freeplay maps. There is no functionality for creating campaign maps, as the tool cannot export triggers or handle the complex mission system of Lego Battles. This may be added in future releases.
 
-Currently, only the king tileset is supported. It takes time to create the tileset data within Tiled, but it is planned to add the Mars and Pirate tilesets in future updates.
 ## Usage
 This tool has two modes. The first is the unpacking mode, which extracts and processes assets from the Lego Battles ROM file and creates a folder with both the extracted assets and some basic Tiled files. The second mode is the processor, which takes a Tiled File (.tmx) and generates a .map file that can be patched into the ROM. Read on for more detailed instructions for each mode.
 
@@ -47,7 +46,7 @@ Failure to include all of these layers in the map may cause the tool to not func
 
 The map properties (Map>Properties in the toolbar to open it in the properties window) includes two unused custom properties, that are planned for future features:
 * Name: This will be used to replace the localised map name in the game.
-* Tileset: This enum will allow you to change what type of tileset is being used.
+* Tileset: This enum will allow you to change what type of tileset is being used. Note that this won't actually change the tileset within Tiled, but tells Lego Battles which tileset you're using.
 
 When you are done editing the map, you can run the tool on the map file in processing mode to create the .map file. You can then use a tool such as [CrystalTile](https://www.romhacking.net/utilities/818/) to import the map into the game. You must replace an existing freeplay map (named like "mp01.map"). You can then load up the game, select the replaced map, and it will instead load your custom map. There are also 4 minimap files that are generated, replace the files in the ROM with these files the same way as the main map.
 
@@ -86,7 +85,6 @@ When you are done editing the map, you can run the tool on the map file in proce
 * Trees currently appear glitched in-game. It is unknown why this happens.
 ## Planned Features
 * Map names. It is currently not decided how this will be done, as it requires the localisation files of the game to be edited.
-* The other two tilesets.
 * Integrated ROM patching. Ideally this would circumvent any map size mismatch issues, as well as remove a step in the workflow.
 ## Credits
 * CUE as always for the LZX compression tools.
