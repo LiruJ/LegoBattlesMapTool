@@ -11,6 +11,10 @@ namespace TiledToLB.Core.Tilemap
         #endregion
 
         #region Properties
+        public string Name { get; private set; } = string.Empty;
+
+        public int ReplacesMPIndex { get; private set; } = 1;
+
         public string TilesetName { get; private set; } = string.Empty;
 
         /// <summary>
@@ -88,6 +92,9 @@ namespace TiledToLB.Core.Tilemap
             XmlNode mapPropertiesNode = tiledFile.SelectSingleNode("/map/properties") ?? throw new Exception("Tiled file has missing map properties!");
 
             TilesetName = mapPropertiesNode.SelectSingleNode("property[@name='Tileset']")?.Attributes?["value"]?.InnerText ?? throw new Exception("Tiled file has missing tileset property on the main map object!");
+            Name = mapPropertiesNode.SelectSingleNode("property[@name='Name']")?.Attributes?["value"]?.InnerText ?? throw new Exception("Tiled file has missing name property on the main map object!");
+            if (int.TryParse(mapPropertiesNode.SelectSingleNode("property[@name='ReplacesMPIndex']")?.Attributes?["value"]?.InnerText, out int replacesMPIndex))
+                ReplacesMPIndex = Math.Clamp(replacesMPIndex, 1, 30);
         }
 
         private void loadTilesets(XmlDocument tiledFile, string inputFilePath)

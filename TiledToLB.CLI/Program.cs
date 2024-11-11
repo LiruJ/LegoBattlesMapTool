@@ -24,6 +24,9 @@ switch (options.ExecutionMode)
     case ExecutionMode.ProcessMap:
         await Processor.ProcessMapAsync(options.InputFile!, options.OutputFile!);
         break;
+    case ExecutionMode.ProcessMapLBZ:
+        await Processor.ProcessAndPackLBZAsync(options.InputFile!, options.OutputFile!);
+        break;
     case ExecutionMode.UnpackRom:
         await Processor.UnpackRomAsync(options.RomFile!, options.TiledTemplateOutput!, options.Silent);
         break;

@@ -16,22 +16,28 @@ namespace TiledToLB.Core.Tilemap
         private const uint tileGraphicMagicWord = 0x43484152;
 
         private const uint footerMagicWord = 0x43504F53;
+
+        public const string NCBRFileExtension = "NCBR";
+
+        public const string NCGRFileExtension = "NCGR";
         #endregion
 
         #region Save Functions
-        public static async Task Save(Map map, string outputFilePath, string temporaryDirectoryPath, bool includeTrees)
+        public static async Task<IEnumerable<string>> Save(Map map, string outputFilePath, string temporaryDirectoryPath, bool includeTrees)
         {
             // Calculate output paths.
-            string outputFileName = Path.GetFileNameWithoutExtension(outputFilePath);
-            outputFileName += includeTrees ? "mini" : "miniNT";
+            string outputFileName = Path.GetFileNameWithoutExtension(outputFilePath) + (includeTrees ? "mini" : "miniNT");
             string outputDirectory = Path.GetDirectoryName(outputFilePath) ?? "";
             outputFilePath = Path.Combine(outputDirectory, outputFileName);
 
-            await saveNCBR(map, outputFilePath, outputFileName, temporaryDirectoryPath, includeTrees);
-            await saveNCGR(map, outputFilePath, outputFileName, temporaryDirectoryPath, includeTrees);
+            return new List<string>()
+            {
+                await saveNCBR(map, outputFilePath, temporaryDirectoryPath, includeTrees),
+                await saveNCGR(map, outputFilePath, temporaryDirectoryPath, includeTrees),
+            };
         }
 
-        private static async Task saveNCBR(Map map, string outputFilePath, string outputFileName, string temporaryDirectoryPath, bool includeTrees)
+        private static async Task<string> saveNCBR(Map map, string outputFilePath, string temporaryDirectoryPath, bool includeTrees)
         {
             // Create the file.
             string uncompressedFilePath = outputFilePath + "_temp.bin";
@@ -46,13 +52,17 @@ namespace TiledToLB.Core.Tilemap
             writeFooter(writer);
 
             writer.Close();
-            await LegoDecompressor.CompressFileAsync(LZXEncodeType.EVB, uncompressedFilePath, Path.ChangeExtension(outputFilePath, "NCBR"), 4096, temporaryDirectoryPath);
+
+            outputFilePath = Path.ChangeExtension(outputFilePath, NCBRFileExtension);
+            await LegoDecompressor.CompressFileAsync(LZXEncodeType.EVB, uncompressedFilePath, outputFilePath, 4096, temporaryDirectoryPath);
 
             // Delete the uncompressed file, now that it is compressed.
             File.Delete(uncompressedFilePath);
+
+            return outputFilePath;
         }
 
-        private static async Task saveNCGR(Map map, string outputFilePath, string outputFileName, string temporaryDirectoryPath, bool includeTrees)
+        private static async Task<string> saveNCGR(Map map, string outputFilePath, string temporaryDirectoryPath, bool includeTrees)
         {
             // Create the file.
             string uncompressedFilePath = outputFilePath + "_temp.bin";
@@ -67,10 +77,14 @@ namespace TiledToLB.Core.Tilemap
             writeFooter(writer);
 
             writer.Close();
-            await LegoDecompressor.CompressFileAsync(LZXEncodeType.EVB, uncompressedFilePath, Path.ChangeExtension(outputFilePath, "NCGR"), 4096, temporaryDirectoryPath);
+
+            outputFilePath = Path.ChangeExtension(outputFilePath, NCGRFileExtension);
+            await LegoDecompressor.CompressFileAsync(LZXEncodeType.EVB, uncompressedFilePath, outputFilePath, 4096, temporaryDirectoryPath);
 
             // Delete the uncompressed file, now that it is compressed.
             File.Delete(uncompressedFilePath);
+
+            return outputFilePath;
         }
 
         private static void writeHeader(BinaryWriter writer, bool isTiled)

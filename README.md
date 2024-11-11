@@ -25,9 +25,14 @@ Processing processes a Tiled map file (.tmx) into a .map file for the game. This
 * -i or --input: The path to the Tiled file (.tmx), including file extension.
 * -o or --output: The path to the desired output .map file, including file extension.
 
+There is also the optional -l or --lbz argument. Providing this will cause the tool to pack the map files into an lbz file for online play.
+
 ### Example
 ``TiledToLB.exe -i "MyTiledMap.tmx" "mp22.map``
-Running this in the command prompt (within the folder containing the executable) will read the "MyTiledMap.tmx" file (and any referenced files, such as the tileset) within the same folder, and produce in that same folder the processed file "mp22.map".
+Running this in the command prompt (within the folder containing the executable) will read the "MyTiledMap.tmx" file (and any referenced files, such as the tileset) within the same folder, and produce in that same folder the processed file "mp22.map", and minimaps.
+
+``TiledToLB.exe -i "MyTiledMap.tmx" "mp22.map -;``
+Running this in the command prompt (within the folder containing the executable) will read the "MyTiledMap.tmx" file (and any referenced files, such as the tileset) within the same folder, and produce in that same folder the processed file "mp22.lbz".
 
 ## Workflow
 To start with, you should run the unpacking process. You should copy and paste the resulting template folder, or rename it, to prevent your work from being overwritten by subsequent unpacking operations.

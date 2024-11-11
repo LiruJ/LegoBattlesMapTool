@@ -6,6 +6,7 @@ internal enum ExecutionMode
 {
     Help,
     ProcessMap,
+    ProcessMapLBZ,
     UnpackRom,
     Invalid,
 }
@@ -27,12 +28,15 @@ internal class CommandLineOptions
     [Option('s', "silent", Required = false, HelpText = "If this is given, no console output will be created")]
     public bool Silent { get; set; } = false;
 
+    [Option('l', "lbz", Required = false, HelpText = "If this is given, the map files will be packed into an LBZ file for online play")]
+    public bool PackLBZ { get; set; } = false;
+
     public ExecutionMode ExecutionMode
     {
         get
         {
             if (!string.IsNullOrWhiteSpace(OutputFile) && !string.IsNullOrWhiteSpace(InputFile))
-                return ExecutionMode.ProcessMap;
+                return PackLBZ ? ExecutionMode.ProcessMapLBZ : ExecutionMode.ProcessMap;
             else if (!string.IsNullOrWhiteSpace(RomFile) && !string.IsNullOrWhiteSpace(TiledTemplateOutput))
                 return ExecutionMode.UnpackRom;
             else return ExecutionMode.Invalid;
@@ -44,6 +48,7 @@ internal class CommandLineOptions
         switch (ExecutionMode)
         {
             case ExecutionMode.ProcessMap:
+            case ExecutionMode.ProcessMapLBZ:
                 if (string.IsNullOrWhiteSpace(InputFile))
                 {
                     Console.WriteLine("Missing tiled file path!");
@@ -78,7 +83,7 @@ internal class CommandLineOptions
                 Console.WriteLine("Invalid execution mode. Either needs input and output parameters to process a map, or a rom parameter to unpack.\nType --help to see how to use this tool.");
                 return false;
             default:
-                return false;
+                throw new InvalidOperationException("Missing execution mode case!");
         }
     }
 }

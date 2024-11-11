@@ -2,6 +2,7 @@
 <map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="24" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="76">
  <properties>
   <property name="Name" value="Example"/>
+  <property name="ReplacesMPIndex" type="int" value="1"/>
   <property name="Tileset" propertytype="Tileset" value="KingTileset"/>
  </properties>
  <tileset firstgid="1" source="KingTileset.tsx"/>
