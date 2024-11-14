@@ -28,10 +28,10 @@ Processing processes a Tiled map file (.tmx) into a .map file for the game. This
 There is also the optional -l or --lbz argument. Providing this will cause the tool to pack the map files into an lbz file for online play.
 
 ### Example
-``TiledToLB.exe -i "MyTiledMap.tmx" "mp22.map``
+``TiledToLB.exe -i "MyTiledMap.tmx" -o "mp22.map"``
 Running this in the command prompt (within the folder containing the executable) will read the "MyTiledMap.tmx" file (and any referenced files, such as the tileset) within the same folder, and produce in that same folder the processed file "mp22.map", and minimaps.
 
-``TiledToLB.exe -i "MyTiledMap.tmx" "mp22.map -;``
+``TiledToLB.exe -i "MyTiledMap.tmx" -o "mp22.map" -l``
 Running this in the command prompt (within the folder containing the executable) will read the "MyTiledMap.tmx" file (and any referenced files, such as the tileset) within the same folder, and produce in that same folder the processed file "mp22.lbz".
 
 ## Workflow
