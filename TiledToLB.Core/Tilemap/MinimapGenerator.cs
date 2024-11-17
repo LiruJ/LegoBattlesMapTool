@@ -1,4 +1,5 @@
 ﻿using ContentUnpacker.Decompressors;
+using System.IO;
 
 namespace TiledToLB.Core.Tilemap
 {
@@ -23,7 +24,7 @@ namespace TiledToLB.Core.Tilemap
         #endregion
 
         #region Save Functions
-        public static async Task<IEnumerable<string>> Save(Map map, string outputFilePath, string temporaryDirectoryPath, bool includeTrees)
+        public static async Task<IEnumerable<string>> Save(Map map, string outputFilePath, bool includeTrees)
         {
             // Calculate output paths.
             string outputFileName = Path.GetFileNameWithoutExtension(outputFilePath) + (includeTrees ? "mini" : "miniNT");
@@ -32,59 +33,51 @@ namespace TiledToLB.Core.Tilemap
 
             return new List<string>()
             {
-                await saveNCBR(map, outputFilePath, temporaryDirectoryPath, includeTrees),
-                await saveNCGR(map, outputFilePath, temporaryDirectoryPath, includeTrees),
+                await saveAndCompressNCBR(map, outputFilePath, includeTrees),
+                await saveAndCompressNCGR(map, outputFilePath, includeTrees),
             };
         }
 
-        private static async Task<string> saveNCBR(Map map, string outputFilePath, string temporaryDirectoryPath, bool includeTrees)
+        private static async Task<string> saveAndCompressNCBR(Map map, string outputFilePath, bool includeTrees)
         {
-            // Create the file.
-            string uncompressedFilePath = outputFilePath + "_temp.bin";
-            FileStream fileStream = File.Create(uncompressedFilePath);
-            BinaryWriter writer = new(fileStream);
+            using MemoryStream outputStream = new(0x2000);
+            saveNCBR(map, outputStream, includeTrees);
 
-            // Write the header.
-            writeHeader(writer, false);
-
-            writeSequentialData(map, writer, includeTrees);
-
-            writeFooter(writer);
-
-            writer.Close();
-
+            outputStream.Position = 0;
             outputFilePath = Path.ChangeExtension(outputFilePath, NCBRFileExtension);
-            await LegoDecompressor.CompressFileAsync(LZXEncodeType.EVB, uncompressedFilePath, outputFilePath, 4096, temporaryDirectoryPath);
-
-            // Delete the uncompressed file, now that it is compressed.
-            File.Delete(uncompressedFilePath);
+            await LegoDecompressor.CompressFileAsync(LZXEncodeType.EVB, outputStream, outputFilePath, 4096);
 
             return outputFilePath;
         }
 
-        private static async Task<string> saveNCGR(Map map, string outputFilePath, string temporaryDirectoryPath, bool includeTrees)
+        private static void saveNCBR(Map map, Stream outputStream, bool includeTrees)
         {
-            // Create the file.
-            string uncompressedFilePath = outputFilePath + "_temp.bin";
-            FileStream fileStream = File.Create(uncompressedFilePath);
-            using BinaryWriter writer = new(fileStream);
-
-            // Write the header.
-            writeHeader(writer, true);
-
-            writeTiledData(map, writer, includeTrees);
-
+            // Write the data to the stream.
+            BinaryWriter writer = new(outputStream);
+            writeHeader(writer, false);
+            writeSequentialData(map, writer, includeTrees);
             writeFooter(writer);
+        }
 
-            writer.Close();
+        private static async Task<string> saveAndCompressNCGR(Map map, string outputFilePath, bool includeTrees)
+        {
+            using MemoryStream outputStream = new(0x2000);
+            saveNCGR(map, outputStream, includeTrees);
 
+            outputStream.Position = 0;
             outputFilePath = Path.ChangeExtension(outputFilePath, NCGRFileExtension);
-            await LegoDecompressor.CompressFileAsync(LZXEncodeType.EVB, uncompressedFilePath, outputFilePath, 4096, temporaryDirectoryPath);
-
-            // Delete the uncompressed file, now that it is compressed.
-            File.Delete(uncompressedFilePath);
+            await LegoDecompressor.CompressFileAsync(LZXEncodeType.EVB, outputStream, outputFilePath, 4096);
 
             return outputFilePath;
+        }
+
+        private static void saveNCGR(Map map, Stream outputStream, bool includeTrees)
+        {
+            // Write the data to the stream.
+            BinaryWriter writer = new(outputStream);
+            writeHeader(writer, true);
+            writeTiledData(map, writer, includeTrees);
+            writeFooter(writer);
         }
 
         private static void writeHeader(BinaryWriter writer, bool isTiled)

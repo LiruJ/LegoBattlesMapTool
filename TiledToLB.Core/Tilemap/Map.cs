@@ -187,14 +187,10 @@ namespace TiledToLB.Core.Tilemap
         #endregion
 
         #region Save Functions
-        public void Save(string filePath)
+        public void SaveToStream(Stream stream)
         {
-            string? outputDirectory = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrWhiteSpace(outputDirectory))
-                Directory.CreateDirectory(outputDirectory);
-
-            using FileStream mapFile = File.Create(filePath);
-            using BinaryWriter mapWriter = new(mapFile);
+            // Don't use "using" as the caller takes care of their stream.
+            BinaryWriter mapWriter = new(stream);
 
             foreach (char character in "MAP")
                 mapWriter.Write(character);
@@ -205,6 +201,17 @@ namespace TiledToLB.Core.Tilemap
 
             foreach (char character in "PAM")
                 mapWriter.Write(character);
+        }
+
+        public void Save(string filePath)
+        {
+            string? outputDirectory = Path.GetDirectoryName(filePath);
+            if (!string.IsNullOrWhiteSpace(outputDirectory))
+                Directory.CreateDirectory(outputDirectory);
+
+            using FileStream mapFile = File.Create(filePath);
+            SaveToStream(mapFile);
+            mapFile.Close();
         }
 
         private void saveMapData(BinaryWriter mapWriter)

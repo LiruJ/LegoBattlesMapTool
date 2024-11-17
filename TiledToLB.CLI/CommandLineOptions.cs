@@ -5,6 +5,7 @@ namespace TiledToLB.CLI;
 internal enum ExecutionMode
 {
     Help,
+    ImportMap,
     ProcessMap,
     ProcessMapLBZ,
     UnpackRom,

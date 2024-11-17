@@ -1,37 +1,40 @@
 ﻿using CommandLine;
 using TiledToLB.CLI;
+using TiledToLB.CLI.CommandLine;
 using TiledToLB.Core;
 
-CommandLineOptions? options = null;
-Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed((parsedOptions) =>
-{
-    // Set the options.
-    if (parsedOptions.Validate())
-        options = parsedOptions;
-}).WithNotParsed((parsedOptions) =>
-{
+Parser.Default.ParseArguments<ProcessOptions, ProcessLBZOptions>(args)
+    .WithParsed<ProcessOptions>(async options => await Processor.ProcessMapAsync(options.InputFilePath, options.OutputDirectoryPath))
+    .WithParsed<ProcessLBZOptions>(async options => await Processor.ProcessAndPackLBZAsync(options.InputFilePath, options.OutputDirectoryPath))
+    .WithNotParsed((errors) => Console.WriteLine("Error parsing inputs!"));
 
-});
+//CommandLineOptions? options = null;
+//Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed((parsedOptions) =>
+//{
+//    // Set the options.
+//    if (parsedOptions.Validate())
+//        options = parsedOptions;
+//}).WithNotParsed((errors) => Console.WriteLine("Error parsing inputs!"));
 
-if (options == null || !options.Silent)
-    await Console.Out.WriteLineAsync("Created by Liru. Credit goes to CUE for the decompressors for LZX.");
+//if (options == null || !options.Silent)
+//    await Console.Out.WriteLineAsync("Created by Liru. Credit goes to CUE for the decompressors for LZX.");
 
-if (options == null)
-    return;
+//if (options == null)
+//    return;
 
-switch (options.ExecutionMode)
-{
-    case ExecutionMode.ProcessMap:
-        await Processor.ProcessMapAsync(options.InputFile!, options.OutputFile!);
-        break;
-    case ExecutionMode.ProcessMapLBZ:
-        await Processor.ProcessAndPackLBZAsync(options.InputFile!, options.OutputFile!);
-        break;
-    case ExecutionMode.UnpackRom:
-        await Processor.UnpackRomAsync(options.RomFile!, options.TiledTemplateOutput!, options.Silent);
-        break;
-    case ExecutionMode.Invalid:
-        throw new Exception("Invalid command line parameters!");
-    default:
-        break;
-}
+//switch (options.ExecutionMode)
+//{
+//    case ExecutionMode.ProcessMap:
+//        await Processor.ProcessMapAsync(options.InputFile!, options.OutputFile!);
+//        break;
+//    case ExecutionMode.ProcessMapLBZ:
+//        await Processor.ProcessAndPackLBZAsync(options.InputFile!, options.OutputFile!);
+//        break;
+//    case ExecutionMode.UnpackRom:
+//        await Processor.UnpackRomAsync(options.RomFile!, options.TiledTemplateOutput!, options.Silent);
+//        break;
+//    case ExecutionMode.Invalid:
+//        throw new Exception("Invalid command line parameters!");
+//    default:
+//        break;
+//}

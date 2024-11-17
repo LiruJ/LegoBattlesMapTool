@@ -17,36 +17,49 @@ public static class Processor
         XmlDocument tiledFile = new();
         tiledFile.Load(inputFilePath);
 
+        // Load the map.
         Tuple<byte, byte> mapDimensions = Map.LoadMapDimensionsFromTiled(tiledFile);
         Map map = new(mapDimensions.Item1, mapDimensions.Item2);
-
         map.LoadFromTiled(tiledFile, inputFilePath);
 
-        string? outputDirectory = Path.GetDirectoryName(outputFilePath);
-        string uncompressedMapPath = Path.GetFileNameWithoutExtension(outputFilePath) + "_temp.bin";
-        if (!string.IsNullOrWhiteSpace(outputDirectory))
-            uncompressedMapPath = Path.Combine(outputDirectory, uncompressedMapPath);
-        map.Save(uncompressedMapPath);
+        // Save the map to a memory stream.
+        using MemoryStream mapStream = new(0x8000);
+        map.SaveToStream(mapStream);
 
+        // Compress the memory stream and save the result to the output file.
+        mapStream.Position = 0;
         string outputMapPath = Path.ChangeExtension(outputFilePath, "map");
-
-        Directory.CreateDirectory(temporaryDirectoryName);
-        await LegoDecompressor.CompressFileAsync(LZXEncodeType.EVB, uncompressedMapPath, outputMapPath, 4096, temporaryDirectoryName);
-        File.Delete(uncompressedMapPath);
-        File.Delete(uncompressedMapPath);
+        await LegoDecompressor.CompressFileAsync(LZXEncodeType.EVB, mapStream, outputMapPath, 4096);
 
         return (map, outputMapPath);
     }
 
     private static async Task<IEnumerable<string>> saveMinimaps(Map map, string outputFilePath)
     {
-        Directory.CreateDirectory(temporaryDirectoryName);
         List<string> minimapFilePaths = new(4);
-        minimapFilePaths.AddRange(await MinimapGenerator.Save(map, outputFilePath, temporaryDirectoryName, false));
-        minimapFilePaths.AddRange(await MinimapGenerator.Save(map, outputFilePath, temporaryDirectoryName, true));
-        Directory.Delete(temporaryDirectoryName, true);
+        minimapFilePaths.AddRange(await MinimapGenerator.Save(map, outputFilePath, false));
+        minimapFilePaths.AddRange(await MinimapGenerator.Save(map, outputFilePath, true));
 
         return minimapFilePaths;
+    }
+
+    public static async Task ImportMapAsync(string inputFilePath, string outputFilePath)
+    {
+        if (string.IsNullOrWhiteSpace(inputFilePath))
+        {
+            Console.WriteLine("Missing input");
+            return;
+        }
+
+        if (!File.Exists(inputFilePath))
+        {
+            Console.WriteLine("File does not exist!");
+            return;
+        }
+
+        Directory.CreateDirectory(temporaryDirectoryName);
+        string decompressedMapFilePath = Path.Combine(temporaryDirectoryName, Path.GetFileName(inputFilePath));
+        //await LegoDecompressor.DecompressFileAsync(inputFilePath, decompressedMapFilePath, temporaryDirectoryName);
     }
 
     public static async Task ProcessMapAsync(string inputFilePath, string outputFilePath)
@@ -102,10 +115,7 @@ public static class Processor
 
         map.LoadFromTiled(tiledFile, inputFilePath);
 
-        Directory.CreateDirectory(temporaryDirectoryName);
-        await MinimapGenerator.Save(map, outputFilePath, temporaryDirectoryName, false);
-        await MinimapGenerator.Save(map, outputFilePath, temporaryDirectoryName, true);
-        Directory.Delete(temporaryDirectoryName, true);
+        await saveMinimaps(map, outputFilePath);
     }
 
     public static async Task UnpackRomAsync(string romInputFilePath, string tiledTemplateOutputPath, bool silent = true)
