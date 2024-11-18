@@ -8,41 +8,40 @@ namespace TiledToLB.Core.Processors
 {
     public static class UnpackerProcessor
     {
-        public static async Task UnpackRomAsync(string romInputFilePath, string templateOutputPath, bool overwrite = false, bool silent = true)
+        public static async Task UnpackRomAsync(string romInputFilePath, string workspaceOutputPath, bool overwrite = false, bool silent = true)
         {
-            createTemplatesDirectory(templateOutputPath, overwrite, silent);
-            unpackResources(templateOutputPath);
+            createWorkspaceDirectory(workspaceOutputPath, overwrite, silent);
+            unpackResources(workspaceOutputPath);
 
             // Read the rom file system.
-            if (silent)
+            if (!silent)
                 Console.WriteLine("Reading ROM file system");
-            NDSFileSystem fileSystem = NDSFileSystem.LoadFromRom(romInputFilePath);
-            if (silent)
+            using FileStream romFile = File.OpenRead(romInputFilePath);
+            NDSFileSystem fileSystem = NDSFileSystem.LoadFromRom(romFile);
+            if (!silent)
                 Console.WriteLine($"Read ROM file system with {fileSystem.FilesById.Count} files and {fileSystem.DirectoriesById.Count} directories");
 
-            using FileStream romFile = File.OpenRead(romInputFilePath);
-
             // Load the tilesets from the rom, save the pngs to the templates folder.
-            string tilesetsFolderPath = Path.Combine(templateOutputPath, CommonProcessor.TemplateTilesetsFolderName);
+            string tilesetsFolderPath = Path.Combine(workspaceOutputPath, CommonProcessor.TemplateTilesetsFolderName);
             await loadTileset(fileSystem, romFile, "KingTileset", tilesetsFolderPath);
             await loadTileset(fileSystem, romFile, "MarsTileset", tilesetsFolderPath);
             await loadTileset(fileSystem, romFile, "PirateTileset", tilesetsFolderPath);
         }
 
-        private static void createTemplatesDirectory(string templateOutputPath, bool overwrite, bool silent)
+        private static void createWorkspaceDirectory(string templateOutputPath, bool overwrite, bool silent)
         {
             // Create the template directory.
             if (overwrite)
             {
                 if (Directory.Exists(templateOutputPath))
                     Directory.Delete(templateOutputPath, true);
-                if (silent)
+                if (!silent)
                     Console.WriteLine($"Deleting existing templates folder at \"{Path.GetFullPath(templateOutputPath)}\"");
             }
             if (!Directory.Exists(templateOutputPath))
             {
                 Directory.CreateDirectory(templateOutputPath);
-                if (silent)
+                if (!silent)
                     Console.WriteLine($"Created templates folder at \"{Path.GetFullPath(templateOutputPath)}\"");
             }
 
