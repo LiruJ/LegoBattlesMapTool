@@ -5,7 +5,7 @@
   <property name="ReplacesMPIndex" type="int" value="1"/>
   <property name="Tileset" propertytype="Tileset" value="KingTileset"/>
  </properties>
- <tileset firstgid="1" source="KingTileset.tsx"/>
+ <tileset firstgid="1" source="../Tilesets/KingTileset.tsx"/>
  <layer id="1" name="Details" width="32" height="32">
   <data encoding="csv">
 126,117,117,117,117,117,117,117,117,117,117,117,117,117,118,97,97,121,131,117,117,117,117,117,117,117,117,117,117,117,117,117,

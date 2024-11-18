@@ -10,6 +10,35 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="WorkspaceTemplate\Maps\ExampleMap.tmx" />
+    <None Remove="WorkspaceTemplate\readme.txt" />
+    <None Remove="WorkspaceTemplate\Tilesets\KingTileset.tsx" />
+    <None Remove="WorkspaceTemplate\Tilesets\MarsTileset.tsx" />
+    <None Remove="WorkspaceTemplate\Tilesets\PirateTileset.tsx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="WorkspaceTemplate\LegoBattles.tiled-project">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WorkspaceTemplate\Maps\ExampleMap.tmx">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WorkspaceTemplate\readme.txt">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WorkspaceTemplate\Tilesets\KingTileset.tsx">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WorkspaceTemplate\Tilesets\MarsTileset.tsx">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WorkspaceTemplate\Tilesets\PirateTileset.tsx">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
   </ItemGroup>
 
@@ -29,24 +58,16 @@
     <None Update="NDSDecompressors.pdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TemplateFiles\ExampleMap.tmx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TemplateFiles\KingTileset.tsx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TemplateFiles\Map.tiled-project">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="NDSDecompressors.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TemplateFiles\MarsTileset.tsx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Update="WorkspaceTemplate\LegoBattles.tiled-session">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="TemplateFiles\PirateTileset.tsx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="WorkspaceTemplate\TileBlueprints\" />
   </ItemGroup>
 
 </Project>
