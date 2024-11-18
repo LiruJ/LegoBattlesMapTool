@@ -362,3 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /TiledToLB.CLI/Properties/launchSettings.json
+/TiledToLB.Core/TemplateFiles/Map.tiled-session
+/TiledToLB.Core/WorkspaceTemplate/Map.tiled-session
+*.tiled-session
