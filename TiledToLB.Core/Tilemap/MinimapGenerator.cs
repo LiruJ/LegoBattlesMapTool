@@ -45,7 +45,7 @@ namespace TiledToLB.Core.Tilemap
 
             outputStream.Position = 0;
             outputFilePath = Path.ChangeExtension(outputFilePath, NCBRFileExtension);
-            await LegoDecompressor.CompressFileAsync(LZXEncodeType.EVB, outputStream, outputFilePath, 4096);
+            await LegoDecompressor.Encode(outputStream, outputFilePath, LZXEncodeType.EVB, 4096);
 
             return outputFilePath;
         }
@@ -66,7 +66,7 @@ namespace TiledToLB.Core.Tilemap
 
             outputStream.Position = 0;
             outputFilePath = Path.ChangeExtension(outputFilePath, NCGRFileExtension);
-            await LegoDecompressor.CompressFileAsync(LZXEncodeType.EVB, outputStream, outputFilePath, 4096);
+            await LegoDecompressor.Encode(outputStream, outputFilePath, LZXEncodeType.EVB, 4096);
 
             return outputFilePath;
         }

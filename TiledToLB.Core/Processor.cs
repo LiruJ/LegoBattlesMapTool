@@ -29,7 +29,7 @@ public static class Processor
         // Compress the memory stream and save the result to the output file.
         mapStream.Position = 0;
         string outputMapPath = Path.ChangeExtension(outputFilePath, "map");
-        await LegoDecompressor.CompressFileAsync(LZXEncodeType.EVB, mapStream, outputMapPath, 4096);
+        await LegoDecompressor.Encode(mapStream, outputMapPath, LZXEncodeType.EWB, 4096);
 
         return (map, outputMapPath);
     }
@@ -145,28 +145,29 @@ public static class Processor
             Console.WriteLine($"Read ROM file system with {fileSystem.FilesById.Count} files and {fileSystem.DirectoriesById.Count} directories");
 
         using FileStream romFile = File.OpenRead(romInputFilePath);
-        using BinaryReader romReader = new(romFile);
 
         // Load the tilesets from the rom, save the pngs to the templates folder.
-        const string temporaryDirectoryPath = "Temporary";
-        Directory.CreateDirectory(temporaryDirectoryPath);
-        await loadTileset(fileSystem, romReader, "KingTileset", tiledTemplateOutputPath, temporaryDirectoryPath);
-        await loadTileset(fileSystem, romReader, "MarsTileset", tiledTemplateOutputPath, temporaryDirectoryPath);
-        await loadTileset(fileSystem, romReader, "PirateTileset", tiledTemplateOutputPath, temporaryDirectoryPath);
-        Directory.Delete(temporaryDirectoryPath, true);
+        await loadTileset(fileSystem, romFile, "KingTileset", tiledTemplateOutputPath);
+        await loadTileset(fileSystem, romFile, "MarsTileset", tiledTemplateOutputPath);
+        await loadTileset(fileSystem, romFile, "PirateTileset", tiledTemplateOutputPath);
     }
 
-    private static async Task loadTileset(NDSFileSystem fileSystem, BinaryReader romReader, string tilesetName, string tiledTemplateOutputPath, string temporaryDirectoryPath, bool silent = true)
+    private static async Task loadTileset(NDSFileSystem fileSystem, Stream romReader, string tilesetName, string tiledTemplateOutputPath, bool silent = true)
     {
         string graphicsName = Path.ChangeExtension(tilesetName, "NCGR");
         NDSFile tilesetGraphics = fileSystem.FilesByPath[graphicsName];
-        await LegoDecompressor.DecompressFileAsync(romReader, tilesetGraphics, Path.Combine(temporaryDirectoryPath, graphicsName), temporaryDirectoryPath);
-        using NDSTileReader tileReader = NDSTileReader.Load(Path.Combine(temporaryDirectoryPath, graphicsName));
+        using Stream graphicsStream = new MemoryStream();
+        await LegoDecompressor.Decode(romReader, graphicsStream, tilesetGraphics);
+
+        graphicsStream.Position = 0;
+        using NDSTileReader tileReader = NDSTileReader.Load(graphicsStream, false);
 
         string paletteName = Path.ChangeExtension(tilesetName, "NCLR");
-        NDSFile kingTilesetPalette = fileSystem.FilesByPath[paletteName];
-        await LegoDecompressor.DecompressFileAsync(romReader, kingTilesetPalette, Path.Combine(temporaryDirectoryPath, paletteName), temporaryDirectoryPath);
-        NDSColourPalette colourPalette = NDSColourPalette.Load(Path.Combine(temporaryDirectoryPath, paletteName));
+        NDSFile tilesetPalette = fileSystem.FilesByPath[paletteName];
+        using Stream paletteStream = new MemoryStream();
+        await LegoDecompressor.Decode(romReader, paletteStream, tilesetPalette);
+        paletteStream.Position = 0;
+        NDSColourPalette colourPalette = NDSColourPalette.Load(paletteStream);
 
         if (!silent)
             await Console.Out.WriteLineAsync($"Loaded {tilesetName} tileset");
@@ -181,8 +182,10 @@ public static class Processor
 
         string blockPaletteName = Path.ChangeExtension(tilesetName[..^2], "tbp");
         NDSFile blockPaletteFile = fileSystem.FilesByPath["BP/" + blockPaletteName];
-        await LegoDecompressor.DecompressFileAsync(romReader, blockPaletteFile, Path.Combine(temporaryDirectoryPath, blockPaletteName), temporaryDirectoryPath);
-        TilemapBlockPalette blockPalette = TilemapBlockPalette.LoadFromFile(Path.Combine(temporaryDirectoryPath, blockPaletteName));
+        using Stream blockPaletteStream = new MemoryStream();
+        await LegoDecompressor.Decode(romReader, blockPaletteStream, blockPaletteFile);
+        blockPaletteStream.Position = 0;
+        TilemapBlockPalette blockPalette = TilemapBlockPalette.LoadFromFile(blockPaletteStream);
 
         if (!silent)
             await Console.Out.WriteLineAsync($"Loaded {tilesetName} block palette");
