@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyVersion>1.1.3</AssemblyVersion>
@@ -12,8 +12,11 @@
   <ItemGroup>
     <None Remove="WorkspaceTemplate\Maps\ExampleMap.tmx" />
     <None Remove="WorkspaceTemplate\readme.txt" />
+    <None Remove="WorkspaceTemplate\Tilesets\KingMiniTiles.tsx" />
     <None Remove="WorkspaceTemplate\Tilesets\KingTileset.tsx" />
+    <None Remove="WorkspaceTemplate\Tilesets\MarsMiniTiles.tsx" />
     <None Remove="WorkspaceTemplate\Tilesets\MarsTileset.tsx" />
+    <None Remove="WorkspaceTemplate\Tilesets\PirateMiniTiles.tsx" />
     <None Remove="WorkspaceTemplate\Tilesets\PirateTileset.tsx" />
   </ItemGroup>
 
@@ -27,18 +30,22 @@
     <EmbeddedResource Include="WorkspaceTemplate\readme.txt">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="WorkspaceTemplate\Tilesets\KingMiniTiles.tsx" />
     <EmbeddedResource Include="WorkspaceTemplate\Tilesets\KingTileset.tsx">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="WorkspaceTemplate\Tilesets\MarsMiniTiles.tsx" />
     <EmbeddedResource Include="WorkspaceTemplate\Tilesets\MarsTileset.tsx">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="WorkspaceTemplate\Tilesets\PirateMiniTiles.tsx" />
     <EmbeddedResource Include="WorkspaceTemplate\Tilesets\PirateTileset.tsx">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Lovebirb.LiruGameHelper" Version="1.1.1" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
   </ItemGroup>
 

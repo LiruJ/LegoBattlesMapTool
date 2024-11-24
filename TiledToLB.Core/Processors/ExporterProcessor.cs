@@ -1,6 +1,7 @@
 ﻿using ContentUnpacker.Decompressors;
 using System.IO.Compression;
 using System.Xml;
+using TiledToLB.Core.Tiled.Map;
 using TiledToLB.Core.Tilemap;
 
 namespace TiledToLB.Core.Processors
@@ -16,6 +17,10 @@ namespace TiledToLB.Core.Processors
             Tuple<byte, byte> mapDimensions = Map.LoadMapDimensionsFromTiled(tiledFile);
             Map map = new(mapDimensions.Item1, mapDimensions.Item2);
             map.LoadFromTiled(tiledFile, inputFilePath);
+
+            // TODO: Remove these:
+            TiledMap tiledMap = TiledMap.Load(inputFilePath);
+            var tilesets = tiledMap.LoadTilesets(inputFilePath);
 
             // Save the map to a memory stream.
             using MemoryStream mapStream = new(0x8000);

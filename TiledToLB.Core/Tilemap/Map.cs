@@ -1,4 +1,6 @@
-﻿using System.Xml;
+﻿using GlobalShared.DataTypes;
+using GlobalShared.Tilemaps;
+using System.Xml;
 
 namespace TiledToLB.Core.Tilemap
 {

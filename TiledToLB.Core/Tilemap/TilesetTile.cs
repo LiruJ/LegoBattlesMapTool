@@ -1,21 +1,14 @@
-﻿using System.Xml;
+﻿using GlobalShared.Tilemaps;
+using System.Xml;
 
 namespace TiledToLB.Core.Tilemap
 {
-    public readonly struct TilesetTile
+    public readonly struct TilesetTile(ushort index, TileType tileType)
     {
         #region Properties
-        public ushort Index { get; }
+        public ushort Index { get; } = index;
 
-        public TileType TileType { get; }
-        #endregion
-
-        #region Constructors
-        public TilesetTile(ushort index, TileType tileType)
-        {
-            Index = index;
-            TileType = tileType;
-        }
+        public TileType TileType { get; } = tileType;
         #endregion
 
         #region Load Functions

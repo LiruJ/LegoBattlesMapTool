@@ -1,4 +1,5 @@
 ﻿using ContentUnpacker.Decompressors;
+using GlobalShared.Tilemaps;
 
 namespace TiledToLB.Core.Tilemap
 {
