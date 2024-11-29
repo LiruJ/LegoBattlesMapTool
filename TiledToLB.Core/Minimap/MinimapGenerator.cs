@@ -35,7 +35,7 @@ namespace TiledToLB.Core.Minimap
                 : Path.Combine(directoryPathName, fileName);
         }
 
-        public static IEnumerable<(string filePath, bool includeTrees, Func<TilemapReader, Stream, bool, Task> saveFunction)> EnumerateAllMinimapVariations(string outputFilePath, bool compressOutput = true)
+        public static IEnumerable<(string filePath, bool includeTrees, Func<LegoTilemap, Stream, bool, Task> saveFunction)> EnumerateAllMinimapVariations(string outputFilePath, bool compressOutput = true)
         {
             yield return (CalculateFileName(outputFilePath, NCBRFileExtension, true), true, compressOutput ? SaveAndCompressNCBR : SaveUncompressedNCBR);
             yield return (CalculateFileName(outputFilePath, NCBRFileExtension, false), false, compressOutput ? SaveAndCompressNCBR : SaveUncompressedNCBR);
@@ -45,7 +45,7 @@ namespace TiledToLB.Core.Minimap
         #endregion
 
         #region NCGR Functions
-        public static async Task SaveAndCompressNCGR(TilemapReader map, Stream outputStream, bool includeTrees)
+        public static async Task SaveAndCompressNCGR(LegoTilemap map, Stream outputStream, bool includeTrees)
         {
             using MemoryStream minimapStream = new(0x2000);
             SaveNCGR(map, minimapStream, includeTrees);
@@ -54,13 +54,13 @@ namespace TiledToLB.Core.Minimap
             await LegoDecompressor.Encode(minimapStream, outputStream, LZXEncodeType.EVB, 4096);
         }
 
-        public static Task SaveUncompressedNCGR(TilemapReader map, Stream outputStream, bool includeTrees)
+        public static Task SaveUncompressedNCGR(LegoTilemap map, Stream outputStream, bool includeTrees)
         {
             SaveNCGR(map, outputStream, includeTrees);
             return Task.CompletedTask;
         }
 
-        public static void SaveNCGR(TilemapReader map, Stream outputStream, bool includeTrees)
+        public static void SaveNCGR(LegoTilemap map, Stream outputStream, bool includeTrees)
         {
             // Write the data to the stream.
             BinaryWriter writer = new(outputStream);
@@ -69,7 +69,7 @@ namespace TiledToLB.Core.Minimap
             writeFooter(writer);
         }
 
-        private static void writeTiledData(TilemapReader map, BinaryWriter writer, bool includeTrees)
+        private static void writeTiledData(LegoTilemap map, BinaryWriter writer, bool includeTrees)
         {
             byte currentByte = 0;
             bool hasCurrentByte = false;
@@ -88,7 +88,7 @@ namespace TiledToLB.Core.Minimap
         #endregion
 
         #region NCBR Functions
-        public static async Task SaveAndCompressNCBR(TilemapReader map, Stream outputStream, bool includeTrees)
+        public static async Task SaveAndCompressNCBR(LegoTilemap map, Stream outputStream, bool includeTrees)
         {
             using MemoryStream minimapStream = new(0x2000);
             SaveNCBR(map, minimapStream, includeTrees);
@@ -97,13 +97,13 @@ namespace TiledToLB.Core.Minimap
             await LegoDecompressor.Encode(minimapStream, outputStream, LZXEncodeType.EVB, 4096);
         }
 
-        public static Task SaveUncompressedNCBR(TilemapReader map, Stream outputStream, bool includeTrees)
+        public static Task SaveUncompressedNCBR(LegoTilemap map, Stream outputStream, bool includeTrees)
         {
             SaveNCBR(map, outputStream, includeTrees);
             return Task.CompletedTask;
         }
 
-        public static void SaveNCBR(TilemapReader map, Stream outputStream, bool includeTrees)
+        public static void SaveNCBR(LegoTilemap map, Stream outputStream, bool includeTrees)
         {
             // Write the data to the stream.
             BinaryWriter writer = new(outputStream);
@@ -112,7 +112,7 @@ namespace TiledToLB.Core.Minimap
             writeFooter(writer);
         }
 
-        private static void writeSequentialData(TilemapReader map, BinaryWriter writer, bool includeTrees)
+        private static void writeSequentialData(LegoTilemap map, BinaryWriter writer, bool includeTrees)
         {
             byte currentByte = 0;
             bool hasCurrentByte = false;
@@ -176,7 +176,7 @@ namespace TiledToLB.Core.Minimap
             writer.Write((uint)0x100010);
         }
 
-        private static void writePixel(TilemapReader map, BinaryWriter writer, int x, int y, bool includeTrees, ref bool hasCurrentByte, ref byte currentByte)
+        private static void writePixel(LegoTilemap map, BinaryWriter writer, int x, int y, bool includeTrees, ref bool hasCurrentByte, ref byte currentByte)
         {
             MinimapTileType value = calculateTileTypePaletteIndex(map, x, y, includeTrees);
 
@@ -191,7 +191,7 @@ namespace TiledToLB.Core.Minimap
             hasCurrentByte = !hasCurrentByte;
         }
 
-        private static MinimapTileType calculateTileTypePaletteIndex(TilemapReader map, int x, int y, bool includeTrees)
+        private static MinimapTileType calculateTileTypePaletteIndex(LegoTilemap map, int x, int y, bool includeTrees)
         {
             float xScale = (float)x / (12 * 8);
             float yScale = (float)y / (12 * 8);
@@ -223,7 +223,7 @@ namespace TiledToLB.Core.Minimap
             };
         }
 
-        private static MinimapTileType calculateFromAdjacent(TilemapReader map, int mapX, int mapY, TileType tileType, MinimapTileType centre, MinimapTileType border)
+        private static MinimapTileType calculateFromAdjacent(LegoTilemap map, int mapX, int mapY, TileType tileType, MinimapTileType centre, MinimapTileType border)
         {
             // If the left and top tiles aren't the given type, it's stone.
             if (!calculateTileAndAdjacentIs(map, mapX, mapY, tileType))
@@ -238,7 +238,7 @@ namespace TiledToLB.Core.Minimap
                 : border;
         }
 
-        private static bool calculateTileAndAdjacentIs(TilemapReader map, int mapX, int mapY, TileType tileType)
+        private static bool calculateTileAndAdjacentIs(LegoTilemap map, int mapX, int mapY, TileType tileType)
         {
             int mapIndex = mapY * map.Width + mapX;
             TileType tileData = map.TileData[mapIndex].TileType;

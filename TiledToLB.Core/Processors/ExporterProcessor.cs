@@ -18,13 +18,13 @@ namespace TiledToLB.Core.Processors
 
             // Create the output file and save the map to it.
             using FileStream outputStream = File.Create(outputFilePath);
-            TilemapReader legoMap = await LegoMapWriter.CreateLegoMapFromTiledMap(map, inputFilePath, outputStream, compressOutput, silent);
+            LegoTilemap legoMap = await LegoMapWriter.CreateLegoMapFromTiledMap(map, inputFilePath, outputStream, compressOutput, silent);
 
             if (!silent)
                 Console.WriteLine("Saving minimaps");
 
             // Save each minimap.
-            foreach ((string filePath, bool includeTrees, Func<TilemapReader, Stream, bool, Task> saveFunction) in MinimapGenerator.EnumerateAllMinimapVariations(outputFilePath, compressOutput))
+            foreach ((string filePath, bool includeTrees, Func<LegoTilemap, Stream, bool, Task> saveFunction) in MinimapGenerator.EnumerateAllMinimapVariations(outputFilePath, compressOutput))
             {
                 using FileStream minimapOutputStream = File.Create(filePath);
                 await saveFunction(legoMap, minimapOutputStream, includeTrees);
@@ -51,7 +51,7 @@ namespace TiledToLB.Core.Processors
 
             // Save the map to a stream.
             using MemoryStream mapOutputStream = new(0x6000);
-            TilemapReader legoMap = await LegoMapWriter.CreateLegoMapFromTiledMap(map, inputFilePath, mapOutputStream, true, silent);
+            LegoTilemap legoMap = await LegoMapWriter.CreateLegoMapFromTiledMap(map, inputFilePath, mapOutputStream, true, silent);
 
             // Add the map to the archive.
             ZipArchiveEntry mapEntry = lbzArchive.CreateEntry("map.map");
@@ -61,7 +61,7 @@ namespace TiledToLB.Core.Processors
             mapEntryStream.Close();
 
             // Add each minimap to the archive.
-            foreach ((string filePath, bool includeTrees, Func<TilemapReader, Stream, bool, Task> saveFunction) in MinimapGenerator.EnumerateAllMinimapVariations("mapimages/@"))
+            foreach ((string filePath, bool includeTrees, Func<LegoTilemap, Stream, bool, Task> saveFunction) in MinimapGenerator.EnumerateAllMinimapVariations("mapimages/@"))
             {
                 ZipArchiveEntry minimapEntry = lbzArchive.CreateEntry(filePath);
                 using Stream minimapEntryStream = minimapEntry.Open();

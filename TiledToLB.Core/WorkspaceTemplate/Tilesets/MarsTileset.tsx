@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.11.0" name="MarsTileset" tilewidth="24" tileheight="16" tilecount="400" columns="20">
+<tileset version="1.10" tiledversion="1.11.0" name="MarsTileset" tilewidth="24" tileheight="16" tilecount="440" columns="20">
  <image source="MarsTiles.png" width="480" height="320"/>
  <tile id="13" type="TypedTile">
   <properties>
@@ -11,11 +11,31 @@
    <property name="Type" type="int" propertytype="TileType" value="2"/>
   </properties>
  </tile>
- <tile id="110" type="TypedTile"/>
- <tile id="111" type="TypedTile"/>
- <tile id="112" type="TypedTile"/>
- <tile id="125" type="TypedTile"/>
- <tile id="127" type="TypedTile"/>
+ <tile id="110" type="TypedTile">
+  <properties>
+   <property name="TreeData" type="int" value="47"/>
+  </properties>
+ </tile>
+ <tile id="111" type="TypedTile">
+  <properties>
+   <property name="TreeData" type="int" value="7"/>
+  </properties>
+ </tile>
+ <tile id="112" type="TypedTile">
+  <properties>
+   <property name="TreeData" type="int" value="151"/>
+  </properties>
+ </tile>
+ <tile id="125" type="TypedTile">
+  <properties>
+   <property name="TreeData" type="int" value="1"/>
+  </properties>
+ </tile>
+ <tile id="127" type="TypedTile">
+  <properties>
+   <property name="TreeData" type="int" value="4"/>
+  </properties>
+ </tile>
  <tile id="190" type="TypedTile">
   <properties>
    <property name="Type" type="int" propertytype="TileType" value="2"/>
@@ -91,11 +111,27 @@
    <property name="Type" type="int" propertytype="TileType" value="2"/>
   </properties>
  </tile>
- <tile id="115" type="TypedTile"/>
+ <tile id="115" type="TypedTile">
+  <properties>
+   <property name="TreeData" type="int" value="41"/>
+  </properties>
+ </tile>
  <tile id="116" type="TypedTile"/>
- <tile id="117" type="TypedTile"/>
- <tile id="130" type="TypedTile"/>
- <tile id="132" type="TypedTile"/>
+ <tile id="117" type="TypedTile">
+  <properties>
+   <property name="TreeData" type="int" value="148"/>
+  </properties>
+ </tile>
+ <tile id="130" type="TypedTile">
+  <properties>
+   <property name="TreeData" type="int" value="32"/>
+  </properties>
+ </tile>
+ <tile id="132" type="TypedTile">
+  <properties>
+   <property name="TreeData" type="int" value="128"/>
+  </properties>
+ </tile>
  <tile id="195" type="TypedTile">
   <properties>
    <property name="Type" type="int" propertytype="TileType" value="2"/>
@@ -143,7 +179,8 @@
  </tile>
  <tile id="53" type="TypedTile">
   <properties>
-   <property name="Type" type="int" propertytype="TileType" value="5"/>
+    <property name="Type" type="int" propertytype="TileType" value="5" />
+    <property name="TreeData" type="int" value="1" />
   </properties>
  </tile>
  <tile id="219" type="TypedTile"/>
@@ -151,11 +188,31 @@
  <tile id="245" type="TypedTile"/>
  <tile id="237" type="TypedTile"/>
  <tile id="234" type="TypedTile"/>
- <tile id="120" type="TypedTile"/>
- <tile id="121" type="TypedTile"/>
- <tile id="122" type="TypedTile"/>
- <tile id="131" type="TypedTile"/>
- <tile id="126" type="TypedTile"/>
+ <tile id="120" type="TypedTile">
+  <properties>
+   <property name="TreeData" type="int" value="233"/>
+  </properties>
+ </tile>
+ <tile id="121" type="TypedTile">
+  <properties>
+   <property name="TreeData" type="int" value="224"/>
+  </properties>
+ </tile>
+ <tile id="122" type="TypedTile">
+  <properties>
+   <property name="TreeData" type="int" value="244"/>
+  </properties>
+ </tile>
+ <tile id="131" type="TypedTile">
+  <properties>
+   <property name="TreeData" type="int" value="129"/>
+  </properties>
+ </tile>
+ <tile id="126" type="TypedTile">
+  <properties>
+   <property name="TreeData" type="int" value="36"/>
+  </properties>
+ </tile>
  <tile id="200" type="TypedTile">
   <properties>
    <property name="Type" type="int" propertytype="TileType" value="2"/>
@@ -720,7 +777,47 @@
  <tile id="396" type="TypedTile"/>
  <tile id="397" type="TypedTile"/>
  <tile id="398" type="TypedTile"/>
- <tile id="399" type="TypedTile"/>
+<tile id="399" type="TypedTile" />
+<tile id="400" />
+<tile id="401" />
+<tile id="402" />
+<tile id="403" />
+<tile id="404" />
+<tile id="405" />
+<tile id="406" />
+<tile id="407" />
+<tile id="408" />
+<tile id="409" />
+<tile id="410" />
+<tile id="411" />
+<tile id="412" />
+<tile id="413" />
+<tile id="414" />
+<tile id="415" />
+<tile id="416" />
+<tile id="417" />
+<tile id="418" />
+<tile id="419" />
+<tile id="420" />
+<tile id="421" />
+<tile id="422" />
+<tile id="423" />
+<tile id="424" />
+<tile id="425" />
+<tile id="426" />
+<tile id="427" />
+<tile id="428" />
+<tile id="429" />
+<tile id="430" />
+<tile id="431" />
+<tile id="432" />
+<tile id="433" />
+<tile id="434" />
+<tile id="435" />
+<tile id="436" />
+<tile id="437" />
+<tile id="438" />
+<tile id="439" />
  <wangsets>
   <wangset name="Terrain" type="mixed" tile="-1">
    <wangcolor name="Mountain" color="#ff0000" tile="-1" probability="1"/>

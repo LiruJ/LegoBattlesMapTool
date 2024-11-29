@@ -134,9 +134,8 @@ namespace TiledToLB.Core.Processors
             if (!silent)
                 await Console.Out.WriteLineAsync($"Loaded {tilesetName} block palette");
 
-            int blockCount = 368;
-            byte sizeInTiles = (byte)MathF.Ceiling(MathF.Sqrt(blockCount));
-            using SpritesheetWriter blockPaletteWriter = new((byte)(sizeInTiles * 3), (byte)(sizeInTiles * 2));
+            int blockCount = TilemapBlockPalette.FactionPaletteCount;
+            using SpritesheetWriter blockPaletteWriter = new(20* 3, 22 * 2);
             blockPaletteWriter.WriteBlockPaletteFromReader(tileReader, colourPalette, blockPalette, blockCount, true);
             await blockPaletteWriter.SaveAsync(tiledTemplateOutputPath ?? "", blockPaletteName, true, false);
 

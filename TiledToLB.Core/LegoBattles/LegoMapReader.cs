@@ -19,7 +19,7 @@ namespace TiledToLB.Core.LegoBattles
         {
             if (!silent)
                 Console.WriteLine("Reading original map data");
-            TilemapReader legoMap = TilemapReader.Load(inputStream, mapName);
+            LegoTilemap legoMap = LegoTilemap.Load(inputStream, mapName);
             if (!silent)
                 Console.WriteLine($"Read map data. Tileset: \"{legoMap.TilesetName}\" Size: {legoMap.Width}x{legoMap.Height}");
 
@@ -49,7 +49,7 @@ namespace TiledToLB.Core.LegoBattles
             tiledMap.Save(outputMapPath);
         }
 
-        private static void createAndAddExtraTileset(TilemapReader legoMap, TiledMap tiledMap, TilemapBlockPalette extraTiles, string workspacePath)
+        private static void createAndAddExtraTileset(LegoTilemap legoMap, TiledMap tiledMap, TilemapBlockPalette extraTiles, string workspacePath)
         {
             // Create the tileset file, which describes how the big tiles are gained from the main image.
             TiledTileset extraTileset = new()
@@ -64,7 +64,7 @@ namespace TiledToLB.Core.LegoBattles
             extraTileset.Tiles.Capacity = extraTiles.Count;
             for (int i = 0; i < extraTiles.Count; i++)
             {
-                TiledTilesetTile tile = new(i, null);
+                TiledTilesetTile tile = new(i, "TypedTile");
                 extraTileset.AddTile(tile);
             }
 
@@ -73,15 +73,16 @@ namespace TiledToLB.Core.LegoBattles
                 for (int x = 0; x < legoMap.Width; x++)
                 {
                     TileData tileData = legoMap.TileData[(y * legoMap.Width) + x];
-                    if (tileData.Index < TilemapBlockPalette.FactionPaletteCount || tileData.TileType == TileType.Grass)
+                    if (tileData.Index < TilemapBlockPalette.FactionPaletteCount)
                         continue;
+                    byte treeData = legoMap.TreeSpriteData[(y * legoMap.Width) + x];
 
                     TiledTilesetTile tilesetTile = extraTileset.Tiles[tileData.Index - TilemapBlockPalette.FactionPaletteCount];
-                    if (tilesetTile.Properties.ContainsKey("Type"))
-                        continue;
+                    if (tileData.TileType != TileType.Grass && !tilesetTile.Properties.ContainsKey("Type"))
+                        tilesetTile.Properties.Add(new TiledProperty("Type", ((int)tileData.TileType).ToString(), TiledPropertyType.Int, "TileType"));
+                    if (treeData != 0 && !tilesetTile.Properties.ContainsKey("TreeData"))
+                        tilesetTile.Properties.Add("TreeData", treeData);
 
-                    tilesetTile.Type = "TypedTile";
-                    tilesetTile.Properties.Add(new TiledProperty("Type", ((int)tileData.TileType).ToString(), TiledPropertyType.Int, "TileType"));
                     extraTileset.Tiles[tileData.Index - TilemapBlockPalette.FactionPaletteCount] = tilesetTile;
                 }
 
@@ -147,7 +148,7 @@ namespace TiledToLB.Core.LegoBattles
 
         }
 
-        private static void addTileData(TilemapReader legoMap, TiledMap tiledMap)
+        private static void addTileData(LegoTilemap legoMap, TiledMap tiledMap)
         {
             TiledMapTileLayer detailsLayer = new()
             {
@@ -176,7 +177,7 @@ namespace TiledToLB.Core.LegoBattles
             tiledMap.AddTileLayer(treesLayer);
         }
 
-        private static void addEvents(TilemapReader legoMap, TiledMap tiledMap)
+        private static void addEvents(LegoTilemap legoMap, TiledMap tiledMap)
         {
             TiledMapObjectGroup patrolPointsGroup = new("Patrol Points", true);
             TiledMapObjectGroup cameraBoundsGroup = new("Camera Bounds", false);
@@ -338,7 +339,7 @@ namespace TiledToLB.Core.LegoBattles
             tiledMap.AddObjectGroup(wallsGroup);
         }
 
-        private static void addTriggers(TilemapReader legoMap, TiledMap tiledMap)
+        private static void addTriggers(LegoTilemap legoMap, TiledMap tiledMap)
         {
             TiledMapObjectGroup triggerGroup = new("Triggers", false);
 
@@ -374,7 +375,7 @@ namespace TiledToLB.Core.LegoBattles
             tiledMap.AddObjectGroup(triggerGroup);
         }
 
-        private static void addMarkers(TilemapReader legoMap, TiledMap tiledMap)
+        private static void addMarkers(LegoTilemap legoMap, TiledMap tiledMap)
         {
             TiledMapObjectGroup markersGroup = new("Markers", true);
 
@@ -406,7 +407,7 @@ namespace TiledToLB.Core.LegoBattles
             tiledMap.AddObjectGroup(markersGroup);
         }
 
-        private static void addMines(TilemapReader legoMap, TiledMap tiledMap)
+        private static void addMines(LegoTilemap legoMap, TiledMap tiledMap)
         {
             TiledMapObjectGroup minesGroup = new("Mines", true);
 

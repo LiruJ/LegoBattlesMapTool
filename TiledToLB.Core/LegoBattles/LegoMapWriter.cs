@@ -4,6 +4,7 @@ using ContentUnpacker.Tilemaps;
 using GlobalShared.DataTypes;
 using GlobalShared.Tilemaps;
 using TiledToLB.Core.LegoBattles.DataStructures;
+using TiledToLB.Core.Processors;
 using TiledToLB.Core.Tiled.Map;
 using TiledToLB.Core.Tiled.Property;
 using TiledToLB.Core.Tiled.Tileset;
@@ -12,17 +13,18 @@ namespace TiledToLB.Core.LegoBattles
 {
     public static class LegoMapWriter
     {
-        public static async Task<TilemapReader> CreateLegoMapFromTiledMap(TiledMap tiledMap, string mapPath, Stream outputStream, bool compressOutput, bool silent)
+        public static async Task<LegoTilemap> CreateLegoMapFromTiledMap(TiledMap tiledMap, string mapPath, Stream outputStream, bool compressOutput, bool silent)
         {
             if (!tiledMap.Properties.TryGetValue("Tileset", out TiledProperty tilesetProperty))
                 throw new ArgumentException("Map is missing tileset property!", nameof(tiledMap));
 
-            TilemapReader legoMap = new((byte)tiledMap.Width, (byte)tiledMap.Height)
+            LegoTilemap legoMap = new((byte)tiledMap.Width, (byte)tiledMap.Height)
             {
                 TilesetName = tilesetProperty.Value
             };
 
             setTerrainData(legoMap, tiledMap, mapPath);
+            setAreaLayer(legoMap, silent);
 
             setEvents(legoMap, tiledMap, silent);
             setTriggers(legoMap, tiledMap, silent);
@@ -48,7 +50,7 @@ namespace TiledToLB.Core.LegoBattles
             return legoMap;
         }
 
-        private static void setTerrainData(TilemapReader legoMap, TiledMap tiledMap, string mapPath)
+        private static void setTerrainData(LegoTilemap legoMap, TiledMap tiledMap, string mapPath)
         {
             if (!tiledMap.TileLayers.TryGetValue("Details", out TiledMapTileLayer? detailsLayer))
                 throw new InvalidDataException("Map was missing tiles layer named \"Details\"!");
@@ -71,6 +73,8 @@ namespace TiledToLB.Core.LegoBattles
                 bool hasTree = treesLayer != null && treesLayer.Data[x, y] != 0;
 
                 TileType tileType = TileType.Grass;
+                byte treeSpriteData = 0;
+
                 if (tileIndex <= 0)
                     throw new InvalidDataException($"Tile at {x}, {y} is missing! (Has a value of 0 or lower)");
                 else if (tileIndex <= TilemapBlockPalette.FactionPaletteCount)
@@ -78,6 +82,8 @@ namespace TiledToLB.Core.LegoBattles
                     TiledTilesetTile tilesetTile = orderedBaseTiles[tileIndex - 1];
                     if (tilesetTile.Properties.TryGetValue("Type", out TiledProperty typeProperty) && byte.TryParse(typeProperty.Value, out byte type))
                         tileType = (TileType)type;
+                    if (tilesetTile.Properties.TryGetValue("TreeData", out TiledProperty treeDataProperty) && byte.TryParse(treeDataProperty.Value, out byte treeData))
+                        treeSpriteData = treeData;
                 }
                 else if (extraTileset != null)
                 {
@@ -88,21 +94,77 @@ namespace TiledToLB.Core.LegoBattles
                         TiledTilesetTile tilesetTile = orderedExtraTiles![tileIndex - (TilemapBlockPalette.FactionPaletteCount + 1)];
                         if (tilesetTile.Properties.TryGetValue("Type", out TiledProperty typeProperty) && byte.TryParse(typeProperty.Value, out byte type))
                             tileType = (TileType)type;
+                        if (tilesetTile.Properties.TryGetValue("TreeData", out TiledProperty treeDataProperty) && byte.TryParse(treeDataProperty.Value, out byte treeData))
+                            treeSpriteData = treeData;
                     }
                 }
                 else
                     throw new InvalidDataException($"Tile at {x}, {y} is out of range!");
 
+                // Set the main tile data.
                 legoMap.TileData[i] = new()
                 {
                     Index = (ushort)(tileIndex - 1),
                     TileType = tileType,
                     HasTree = hasTree,
                 };
+
+                // Set the tree sprite data.
+                legoMap.TreeSpriteData[i] = treeSpriteData;
             }
         }
 
-        private static void setEvents(TilemapReader legoMap, TiledMap tiledMap, bool silent)
+        private static void setAreaLayer(LegoTilemap legoMap, bool silent)
+        {
+            for (int i = 0; i < legoMap.Width * legoMap.Height; i++)
+                legoMap.MapAreaIndexData[i] = byte.MaxValue;
+
+            bool calculateIsValidType(TileType targetTileType, TileType otherTileType)
+                => targetTileType switch
+                {
+                    TileType.Grass or TileType.Stone => otherTileType == TileType.Stone || otherTileType == TileType.Grass,
+                    TileType.Water => otherTileType == TileType.Water,
+                    TileType.Mountain => otherTileType == TileType.Mountain,
+                    _ => false,
+                };
+
+            void floodFillTile(int x, int y, byte currentAreaIndex, TileType targetTileType)
+            {
+                int i = (y * legoMap.Width) + x;
+                legoMap.MapAreaIndexData[i] = currentAreaIndex;
+
+                int rightI = (y * legoMap.Width) + (x + 1);
+                int leftI = (y * legoMap.Width) + (x - 1);
+                int topI = ((y - 1) * legoMap.Width) + x;
+                int bottomI = ((y + 1) * legoMap.Width) + x;
+
+                if (x + 1 < legoMap.Width && legoMap.MapAreaIndexData[rightI] == byte.MaxValue && calculateIsValidType(targetTileType, legoMap.TileData[rightI].TileType))
+                    floodFillTile(x + 1, y, currentAreaIndex, targetTileType);
+                if (y + 1 < legoMap.Height && legoMap.MapAreaIndexData[bottomI] == byte.MaxValue && calculateIsValidType(targetTileType, legoMap.TileData[bottomI].TileType))
+                    floodFillTile(x, y + 1, currentAreaIndex, targetTileType);
+                if (x - 1 >= 0 && legoMap.MapAreaIndexData[leftI] == byte.MaxValue && calculateIsValidType(targetTileType, legoMap.TileData[leftI].TileType))
+                    floodFillTile(x - 1, y, currentAreaIndex, targetTileType);
+                if (y - 1 >= 0 && legoMap.MapAreaIndexData[topI] == byte.MaxValue && calculateIsValidType(targetTileType, legoMap.TileData[topI].TileType))
+                    floodFillTile(x, y - 1, currentAreaIndex, targetTileType);
+            }
+
+            byte currentAreaIndex = 0;
+            for (int y = 0; y < legoMap.Height; y++)
+                for (int x = 0; x < legoMap.Width; x++)
+                {
+                    int i = (y * legoMap.Width) + x;
+                    if (legoMap.MapAreaIndexData[i] == byte.MaxValue)
+                    {
+                        floodFillTile(x, y, currentAreaIndex, legoMap.TileData[i].TileType);
+                        currentAreaIndex++;
+                    }
+                }
+
+            if (!silent)
+                Console.WriteLine($"Mapped {currentAreaIndex} areas");
+        }
+
+        private static void setEvents(LegoTilemap legoMap, TiledMap tiledMap, bool silent)
         {
             EventLayers eventLayers = EventLayers.LoadFromTiledMap(tiledMap);
 
@@ -215,7 +277,7 @@ namespace TiledToLB.Core.LegoBattles
             }
         }
 
-        private static void setTriggers(TilemapReader legoMap, TiledMap tiledMap, bool silent)
+        private static void setTriggers(LegoTilemap legoMap, TiledMap tiledMap, bool silent)
         {
             if (!tiledMap.ObjectGroups.TryGetValue("Triggers", out TiledMapObjectGroup? triggersLayer))
             {
@@ -223,8 +285,8 @@ namespace TiledToLB.Core.LegoBattles
                     Console.WriteLine("Found no triggers");
                 return;
             }
-                if (!silent)
-            Console.WriteLine($"Saving {triggersLayer.Objects.Count} triggers");
+            if (!silent)
+                Console.WriteLine($"Saving {triggersLayer.Objects.Count} triggers");
 
             foreach (TiledMapObject triggerObject in triggersLayer.Objects.OrderBy(x => x.Properties.GetOrDefault("SortKey", int.MaxValue)))
             {
@@ -253,7 +315,7 @@ namespace TiledToLB.Core.LegoBattles
             }
         }
 
-        private static void setMarkers(TilemapReader legoMap, TiledMap tiledMap, bool silent)
+        private static void setMarkers(LegoTilemap legoMap, TiledMap tiledMap, bool silent)
         {
             if (!tiledMap.ObjectGroups.TryGetValue("Markers", out TiledMapObjectGroup? markersLayer))
             {
@@ -261,8 +323,8 @@ namespace TiledToLB.Core.LegoBattles
                     Console.WriteLine("Found no markers");
                 return;
             }
-                if (!silent)
-            Console.WriteLine($"Saving {markersLayer.Objects.Count} markers");
+            if (!silent)
+                Console.WriteLine($"Saving {markersLayer.Objects.Count} markers");
 
             foreach (IGrouping<int, TiledMapObject>? sortKeyGroup in markersLayer.Objects
                                                                         .GroupBy(x => x.Properties.GetOrDefault("SortKey", int.MaxValue))
@@ -290,7 +352,7 @@ namespace TiledToLB.Core.LegoBattles
             }
         }
 
-        private static void setMines(TilemapReader legoMap, TiledMap tiledMap, bool silent)
+        private static void setMines(LegoTilemap legoMap, TiledMap tiledMap, bool silent)
         {
             if (!tiledMap.ObjectGroups.TryGetValue("Mines", out TiledMapObjectGroup? minesLayer))
             {
@@ -301,7 +363,7 @@ namespace TiledToLB.Core.LegoBattles
                 return;
             }
             if (!silent)
-            Console.WriteLine($"Saving {minesLayer.Objects.Count} mines");
+                Console.WriteLine($"Saving {minesLayer.Objects.Count} mines");
 
             IGrouping<int, TiledMapObject>[] mineGroups = [.. minesLayer.Objects
                                                             .GroupBy(x => x.Properties.GetOrDefault("SortKey", int.MaxValue))
