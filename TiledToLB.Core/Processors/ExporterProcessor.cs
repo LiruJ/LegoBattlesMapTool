@@ -1,102 +1,87 @@
-﻿using ContentUnpacker.Decompressors;
+﻿using ContentUnpacker.Tilemaps;
 using System.IO.Compression;
-using System.Xml;
+using TiledToLB.Core.LegoBattles;
+using TiledToLB.Core.Minimap;
 using TiledToLB.Core.Tiled.Map;
-using TiledToLB.Core.Tilemap;
+using TiledToLB.Core.Tiled.Property;
 
 namespace TiledToLB.Core.Processors
 {
     public static class ExporterProcessor
     {
-        private static async Task<(Map map, string outputMapPath)> loadAndSaveMap(string inputFilePath, string outputFilePath)
+        public static async Task ProcessMapAsync(string inputFilePath, string outputFilePath, bool compressOutput = true, bool silent = true)
         {
-            XmlDocument tiledFile = new();
-            tiledFile.Load(inputFilePath);
-
             // Load the map.
-            Tuple<byte, byte> mapDimensions = Map.LoadMapDimensionsFromTiled(tiledFile);
-            Map map = new(mapDimensions.Item1, mapDimensions.Item2);
-            map.LoadFromTiled(tiledFile, inputFilePath);
+            TiledMap map = TiledMap.Load(inputFilePath);
 
-            // TODO: Remove these:
-            TiledMap tiledMap = TiledMap.Load(inputFilePath);
-            var tilesets = tiledMap.LoadTilesets(inputFilePath);
+            //await LegoDecompressor.Encode("Templates/Output/ck1_1.map", "ck1_1.map", LZXEncodeType.EWB, 4096);
 
-            // Save the map to a memory stream.
-            using MemoryStream mapStream = new(0x8000);
-            map.SaveToStream(mapStream);
+            // Create the output file and save the map to it.
+            using FileStream outputStream = File.Create(outputFilePath);
+            TilemapReader legoMap = await LegoMapWriter.CreateLegoMapFromTiledMap(map, inputFilePath, outputStream, compressOutput, silent);
 
-            // Compress the memory stream and save the result to the output file.
-            mapStream.Position = 0;
-            string outputMapPath = Path.ChangeExtension(outputFilePath, "map");
-            await LegoDecompressor.Encode(mapStream, outputMapPath, LZXEncodeType.EWB, 4096);
+            if (!silent)
+                Console.WriteLine("Saving minimaps");
 
-            return (map, outputMapPath);
+            // Save each minimap.
+            foreach ((string filePath, bool includeTrees, Func<TilemapReader, Stream, bool, Task> saveFunction) in MinimapGenerator.EnumerateAllMinimapVariations(outputFilePath, compressOutput))
+            {
+                using FileStream minimapOutputStream = File.Create(filePath);
+                await saveFunction(legoMap, minimapOutputStream, includeTrees);
+            }
+
+            if (!silent)
+                Console.WriteLine("All files saved successfully");
         }
 
-        private static async Task<IEnumerable<string>> saveMinimaps(Map map, string outputFilePath)
+        public static async Task ProcessAndPackLBZAsync(string inputFilePath, string outputFilePath, bool silent = true)
         {
-            List<string> minimapFilePaths = new(4);
-            minimapFilePaths.AddRange(await MinimapGenerator.Save(map, outputFilePath, false));
-            minimapFilePaths.AddRange(await MinimapGenerator.Save(map, outputFilePath, true));
+            // Load the map.
+            TiledMap map = TiledMap.Load(inputFilePath);
 
-            return minimapFilePaths;
-        }
+            string mapName = Path.GetFileNameWithoutExtension(outputFilePath);
+            string? outputDirectoryPath = Path.GetDirectoryName(outputFilePath);
 
-        public static async Task ProcessMapAsync(string inputFilePath, string outputFilePath)
-        {
-            Map map = (await loadAndSaveMap(inputFilePath, outputFilePath)).map;
-            await saveMinimaps(map, outputFilePath);
-        }
+            // Calculate the archive path.
+            string archiveFilePath = outputDirectoryPath != null ? Path.Combine(outputDirectoryPath, mapName) : mapName;
 
-        public static async Task ProcessAndPackLBZAsync(string inputFilePath, string outputFilePath)
-        {
-            (Map map, string outputMapPath) = await loadAndSaveMap(inputFilePath, outputFilePath);
-            IEnumerable<string> minimapFilePaths = await saveMinimaps(map, outputFilePath);
-
-            string archiveFilePath;
-            if (Path.GetDirectoryName(outputFilePath) is string outputDirectory)
-                archiveFilePath = Path.Combine(outputDirectory, map.Name);
-            else
-                archiveFilePath = map.Name;
-
+            // Create the archive.
             using FileStream lbzFile = File.Create(Path.ChangeExtension(archiveFilePath, "lbz"));
             using ZipArchive lbzArchive = new(lbzFile, ZipArchiveMode.Create);
 
-            // Add the map to the archive.
-            lbzArchive.CreateEntryFromFile(outputMapPath, "map.map");
+            // Save the map to a stream.
+            using MemoryStream mapOutputStream = new(0x6000);
+            TilemapReader legoMap = await LegoMapWriter.CreateLegoMapFromTiledMap(map, inputFilePath, mapOutputStream, true, silent);
 
-            // Add the minimaps to the archive.
-            foreach (string minimapFile in minimapFilePaths)
+            // Add the map to the archive.
+            ZipArchiveEntry mapEntry = lbzArchive.CreateEntry("map.map");
+            using Stream mapEntryStream = mapEntry.Open();
+            mapOutputStream.Position = 0;
+            mapOutputStream.CopyTo(mapEntryStream);
+            mapEntryStream.Close();
+
+            // Add each minimap to the archive.
+            foreach ((string filePath, bool includeTrees, Func<TilemapReader, Stream, bool, Task> saveFunction) in MinimapGenerator.EnumerateAllMinimapVariations("mapimages/@"))
             {
-                string mapName = minimapFile[minimapFile.LastIndexOf("mini")..];
-                lbzArchive.CreateEntryFromFile(minimapFile, $"mapimages\\@{mapName}");
+                ZipArchiveEntry minimapEntry = lbzArchive.CreateEntry(filePath);
+                using Stream minimapEntryStream = minimapEntry.Open();
+
+                using MemoryStream minimapOutputStream = new(0x4000);
+                await saveFunction(legoMap, minimapOutputStream, includeTrees);
+                minimapOutputStream.Position = 0;
+                minimapOutputStream.CopyTo(minimapEntryStream);
+                minimapEntryStream.Close();
             }
 
+            // Add the manifest file to the archive.
             ZipArchiveEntry manifestEntry = lbzArchive.CreateEntry("manifest.toml");
-            using Stream manifestStream = manifestEntry.Open();
-            using StreamWriter manifestWriter = new(manifestStream);
+            using Stream manifestEntryStream = manifestEntry.Open();
+            using StreamWriter manifestWriter = new(manifestEntryStream);
 
+            // Write the manifest file.
             manifestWriter.WriteLine($"type = \"map\"");
-            manifestWriter.WriteLine($"name = \"{map.Name}\"");
-            manifestWriter.WriteLine($"args = [ \"mp{map.ReplacesMPIndex:00}\" ]");
-
-            File.Delete(outputMapPath);
-            foreach (string minimapFile in minimapFilePaths)
-                File.Delete(minimapFile);
-        }
-
-        public static async Task ProcessMinimapAsync(string inputFilePath, string outputFilePath)
-        {
-            XmlDocument tiledFile = new();
-            tiledFile.Load(inputFilePath);
-
-            Tuple<byte, byte> mapDimensions = Map.LoadMapDimensionsFromTiled(tiledFile);
-            Map map = new(mapDimensions.Item1, mapDimensions.Item2);
-
-            map.LoadFromTiled(tiledFile, inputFilePath);
-
-            await saveMinimaps(map, outputFilePath);
+            manifestWriter.WriteLine($"name = \"{(map.Properties.TryGetValue("Name", out TiledProperty nameProperty) ? nameProperty.Value : mapName)}\"");
+            manifestWriter.WriteLine($"args = [ \"mp{(map.Properties.TryGetValue("ReplacesMPIndex", out TiledProperty mpIndexProperty) ? int.Parse(mpIndexProperty.Value) : 0):00}\" ]");
         }
     }
 }

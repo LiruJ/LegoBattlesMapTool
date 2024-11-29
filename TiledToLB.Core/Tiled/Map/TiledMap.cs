@@ -1,5 +1,6 @@
 ﻿using LiruGameHelper.XML;
 using System.Xml;
+using TiledToLB.Core.Tiled.Property;
 using TiledToLB.Core.Tiled.Tileset;
 
 namespace TiledToLB.Core.Tiled.Map
@@ -24,7 +25,7 @@ namespace TiledToLB.Core.Tiled.Map
 
         public int NextObjectID { get; set; } = 0;
 
-        public Dictionary<string, TiledProperty> PropertiesByName { get; } = [];
+        public TiledPropertyCollection Properties { get; } = [];
 
         public List<TiledMapTileset> Tilesets { get; } = [];
 
@@ -50,17 +51,6 @@ namespace TiledToLB.Core.Tiled.Map
             => Tilesets.Add(new() { FirstGID = firstGID, Source = source });
 
         public void AddTileset(TiledMapTileset tileset) => Tilesets.Add(tileset);
-        #endregion
-
-        #region Property Functions
-        public void AddProperty(string name, int value)
-            => AddProperty(name, new TiledProperty(name, value.ToString(), TiledPropertyType.Int, null));
-
-        public void AddProperty(string name, string value)
-            => AddProperty(name, new TiledProperty(name, value, TiledPropertyType.String, null));
-
-        public void AddProperty(string name, TiledProperty property)
-            => PropertiesByName.Add(name, property);
         #endregion
 
         #region Tile Layer Functions
@@ -121,14 +111,8 @@ namespace TiledToLB.Core.Tiled.Map
         private void loadProperties(XmlDocument tiledFile)
         {
             // Load each property.
-            XmlNode propertiesNode = tiledFile.SelectSingleNode("/map/properties") ?? throw new InvalidDataException("Tiled file has missing map properties!");
-            foreach (XmlNode propertyNode in propertiesNode)
-            {
-                if (propertyNode.NodeType != XmlNodeType.Element)
-                    continue;
-                TiledProperty property = TiledProperty.LoadFromNode(propertyNode);
-                PropertiesByName.Add(property.Name, property);
-            }
+            XmlNodeList? propertyNodes = tiledFile.SelectNodes("/map/properties/property") ?? throw new InvalidDataException("Tiled file has missing map properties!");
+            Properties.Load(propertyNodes);
         }
 
         private void loadTilesets(XmlDocument tiledFile)
@@ -219,8 +203,7 @@ namespace TiledToLB.Core.Tiled.Map
         private void saveProperties(XmlNode mapNode)
         {
             XmlNode propertiesNode = mapNode.OwnerDocument!.CreateElement("properties");
-            foreach (TiledProperty property in PropertiesByName.Values)
-                property.SaveToNode(propertiesNode);
+            Properties.Save(propertiesNode);
             mapNode.AppendChild(propertiesNode);
         }
 

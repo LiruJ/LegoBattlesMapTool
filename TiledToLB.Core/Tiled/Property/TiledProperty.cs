@@ -1,7 +1,7 @@
 ﻿using System.Xml;
 using LiruGameHelper.XML;
 
-namespace TiledToLB.Core.Tiled
+namespace TiledToLB.Core.Tiled.Property
 {
     public struct TiledProperty(string name, string value, TiledPropertyType? type, string? propertyType)
     {

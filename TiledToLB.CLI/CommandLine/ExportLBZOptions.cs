@@ -2,8 +2,8 @@
 
 namespace TiledToLB.CLI.CommandLine
 {
-    [Verb("process", HelpText = "Processes a .tmx file into multiple files to be patched into the ROM")]
-    public class ProcessOptions : BaseOptions
+    [Verb("export-lbz", HelpText = "Processes a .tmx file into multiple files to be patched into the ROM")]
+    public class ExportLBZOptions : BaseOptions
     {
         [Option('o', "output", Required = true, HelpText = "The output directory of the fully processed data")]
         public required string OutputDirectoryPath { get; set; }

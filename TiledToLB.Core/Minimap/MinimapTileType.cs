@@ -1,4 +1,4 @@
-﻿namespace TiledToLB.Core.Tilemap
+﻿namespace TiledToLB.Core.Minimap
 {
     internal enum MinimapTileType : byte
     {

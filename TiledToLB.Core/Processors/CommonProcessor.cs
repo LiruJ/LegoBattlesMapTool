@@ -10,6 +10,8 @@
         public const string TemplateTileBlueprintsFolderName = "TileBlueprints";
 
         public const string TemplateTilesetsFolderName = "Tilesets";
+
+        public const string OutputFolderName = "Output";
         #endregion
     }
 }

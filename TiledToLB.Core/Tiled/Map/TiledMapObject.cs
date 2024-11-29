@@ -1,6 +1,7 @@
 ﻿using LiruGameHelper.XML;
 using System.Text;
 using System.Xml;
+using TiledToLB.Core.Tiled.Property;
 
 namespace TiledToLB.Core.Tiled.Map
 {
@@ -21,27 +22,12 @@ namespace TiledToLB.Core.Tiled.Map
 
         public float? Height { get; set; }
 
-        public Dictionary<string, TiledProperty> Properties { get; } = [];
+        public TiledPropertyCollection Properties { get; } = [];
 
         public List<float> PolylinePoints { get; } = [];
         #endregion
 
-        #region Property Functions
-        public readonly void AddProperty(string name, string value)
-            => Properties.Add(name, new TiledProperty(name, value, TiledPropertyType.String, null));
-
-        public readonly void AddProperty(string name, int value)
-            => Properties.Add(name, new TiledProperty(name, value.ToString(), TiledPropertyType.Int, null));
-
-        public readonly void AddProperty(string name, float value)
-            => Properties.Add(name, new TiledProperty(name, value.ToString(), TiledPropertyType.Float, null));
-
-        public readonly void AddProperty(string name, bool value)
-            => Properties.Add(name, new TiledProperty(name, value.ToString().ToLower(), TiledPropertyType.Bool, null));
-
-        public readonly void AddProperty(TiledProperty property)
-            => Properties.Add(property.Name, property);
-
+        #region Polyline Functions
         public readonly void AddPolylinePoint(float x, float y)
         {
             PolylinePoints.Add(x);
@@ -64,12 +50,21 @@ namespace TiledToLB.Core.Tiled.Map
             };
 
             XmlNodeList? propertyNodes = node.SelectNodes("properties/property");
-            if (propertyNodes != null)
-                foreach (XmlNode propertyNode in propertyNodes)
+            tiledMapObject.Properties.Load(propertyNodes);
+
+            XmlNode? polylinePointsNode = node.SelectSingleNode("polyline");
+            if (polylinePointsNode != null && polylinePointsNode.GetAttributeValue("points") is string polylinePointsString)
+            {
+                string[] coordPairs = polylinePointsString.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                foreach (string coordPair in coordPairs)
                 {
-                    TiledProperty property = TiledProperty.LoadFromNode(propertyNode);
-                    tiledMapObject.Properties.Add(property.Name, property);
+                    string[] coords = coordPair.Split(",", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                    if (coords.Length != 2 || !float.TryParse(coords[0], out float x) || !float.TryParse(coords[1], out float y))
+                        throw new InvalidDataException($"Polyline of object {tiledMapObject.ID} has invalid coords!");
+
+                    tiledMapObject.AddPolylinePoint(x, y);
                 }
+            }
 
             return tiledMapObject;
         }
@@ -99,8 +94,7 @@ namespace TiledToLB.Core.Tiled.Map
             if (Properties.Count > 0)
             {
                 XmlNode propertiesNode = parentNode.OwnerDocument!.CreateElement("properties");
-                foreach (TiledProperty property in Properties.Values)
-                    property.SaveToNode(propertiesNode);
+                Properties.Save(propertiesNode);
                 node.AppendChild(propertiesNode);
             }
 

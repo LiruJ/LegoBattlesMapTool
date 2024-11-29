@@ -1,4 +1,4 @@
-﻿namespace TiledToLB.Core.Tiled
+﻿namespace TiledToLB.Core.Tiled.Property
 {
     public enum TiledPropertyType
     {

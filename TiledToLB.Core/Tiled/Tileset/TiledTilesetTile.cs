@@ -1,5 +1,6 @@
 ﻿using LiruGameHelper.XML;
 using System.Xml;
+using TiledToLB.Core.Tiled.Property;
 
 namespace TiledToLB.Core.Tiled.Tileset
 {
@@ -10,24 +11,7 @@ namespace TiledToLB.Core.Tiled.Tileset
 
         public string? Type { get; set; } = type;
 
-        public Dictionary<string, TiledProperty> Properties { get; } = [];
-        #endregion
-
-        #region Property Functions
-        public readonly void AddProperty(string name, string value)
-            => Properties.Add(name, new TiledProperty(name, value, TiledPropertyType.String, null));
-
-        public readonly void AddProperty(string name, int value)
-            => Properties.Add(name, new TiledProperty(name, value.ToString(), TiledPropertyType.Int, null));
-
-        public readonly void AddProperty(string name, float value)
-            => Properties.Add(name, new TiledProperty(name, value.ToString(), TiledPropertyType.Float, null));
-
-        public readonly void AddProperty(string name, bool value)
-            => Properties.Add(name, new TiledProperty(name, value.ToString().ToLower(), TiledPropertyType.Bool, null));
-
-        public readonly void AddProperty(TiledProperty property)
-            => Properties.Add(property.Name, property);
+        public TiledPropertyCollection Properties { get; } = [];
         #endregion
 
         #region Load Functions
@@ -39,12 +23,7 @@ namespace TiledToLB.Core.Tiled.Tileset
             TiledTilesetTile tile = new(id, type);
 
             XmlNodeList? propertyNodes = node.SelectNodes("properties/property");
-            if (propertyNodes != null)
-                foreach (XmlNode propertyNode in propertyNodes)
-                {
-                    TiledProperty property = TiledProperty.LoadFromNode(propertyNode);
-                    tile.Properties.Add(property.Name, property);
-                }
+            tile.Properties.Load(propertyNodes);
 
             return tile;
         }
@@ -62,8 +41,7 @@ namespace TiledToLB.Core.Tiled.Tileset
             if (Properties.Count > 0)
             {
                 XmlNode propertiesNode = parentNode.OwnerDocument!.CreateElement("properties");
-                foreach (TiledProperty property in Properties.Values)
-                    property.SaveToNode(propertiesNode);
+                Properties.Save(propertiesNode);
                 node.AppendChild(propertiesNode);
             }
 
