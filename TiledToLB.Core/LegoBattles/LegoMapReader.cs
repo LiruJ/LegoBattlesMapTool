@@ -24,11 +24,7 @@ namespace TiledToLB.Core.LegoBattles
                 Console.WriteLine($"Read map data. Tileset: \"{legoMap.TilesetName}\" Size: {legoMap.Width}x{legoMap.Height}");
 
             // Create the map.
-            TiledMap tiledMap = new(legoMap.Width, legoMap.Height)
-            {
-                TileWidth = 24,
-                TileHeight = 16,
-            };
+            TiledMap tiledMap = new(legoMap.Width, legoMap.Height, 24, 16);
 
             tiledMap.Properties.Add("Name", mapName);
             tiledMap.Properties.Add("Creator", "Hellbent Games");
@@ -154,20 +150,10 @@ namespace TiledToLB.Core.LegoBattles
         private static void createExtraTilesetTilemap(int widthInMiniTiles, int heightInMiniTiles, string workspacePath, string tilesetName, string baseTilesetName, TilemapBlockPalette extraTiles)
         {
             // Create the tileset tilemap.
-            TiledMap extraTilesetTilemap = new(widthInMiniTiles, heightInMiniTiles)
-            {
-                TileWidth = 8,
-                TileHeight = 8,
-            };
+            TiledMap extraTilesetTilemap = new(widthInMiniTiles, heightInMiniTiles, 8, 8);
 
             // Create the tile layer for the mini tiles.
-            TiledMapTileLayer tilesLayer = new()
-            {
-                Name = "Mini Tiles",
-                Width = widthInMiniTiles,
-                Height = heightInMiniTiles,
-                Data = new int[widthInMiniTiles, heightInMiniTiles],
-            };
+            TiledMapTileLayer tilesLayer = extraTilesetTilemap.AddTileLayer("Mini Tiles");
 
             // Add the mini tiles tileset to the tileset tilemap.
             string miniTilesetName = baseTilesetName[..baseTilesetName.IndexOf('T')] + "MiniTiles.tsx";
@@ -192,28 +178,15 @@ namespace TiledToLB.Core.LegoBattles
                 tilesLayer.Data[miniTileX + 2, miniTileY + 1] = block.BottomRight + 1;
             }
 
-            // Add the tile layer, and save the map.
-            extraTilesetTilemap.AddTileLayer(tilesLayer);
+            // Save the map.
             extraTilesetTilemap.Save(Path.Combine(workspacePath, CommonProcessor.TemplateTileBlueprintsFolderName, Path.ChangeExtension(tilesetName, "tmx")));
         }
 
         private static void addTileData(LegoTilemap legoMap, TiledMap tiledMap)
         {
-            TiledMapTileLayer detailsLayer = new()
-            {
-                Name = "Details",
-                Width = legoMap.Width,
-                Height = legoMap.Height,
-                Data = new int[legoMap.Width, legoMap.Height],
-            };
-            TiledMapTileLayer treesLayer = new()
-            {
-                Name = "Trees",
-                Width = legoMap.Width,
-                Height = legoMap.Height,
-                Opacity = 0.5f,
-                Data = new int[legoMap.Width, legoMap.Height],
-            };
+            TiledMapTileLayer detailsLayer = tiledMap.AddTileLayer("Details");
+            TiledMapTileLayer treesLayer = tiledMap.AddTileLayer("Trees");
+            treesLayer.Opacity = 0.5f;
 
             for (int y = 0; y < legoMap.Height; y++)
                 for (int x = 0; x < legoMap.Width; x++)
@@ -221,18 +194,16 @@ namespace TiledToLB.Core.LegoBattles
                     detailsLayer.Data[x, y] = legoMap.TileData[(y * legoMap.Width) + x].Index + 1;
                     treesLayer.Data[x, y] = legoMap.TileData[(y * legoMap.Width) + x].HasTree ? 7 : 0;
                 }
-
-            tiledMap.AddTileLayer(detailsLayer);
-            tiledMap.AddTileLayer(treesLayer);
         }
 
         private static void addEvents(LegoTilemap legoMap, TiledMap tiledMap)
         {
-            TiledMapObjectGroup patrolPointsGroup = new("Patrol Points", true);
-            TiledMapObjectGroup cameraBoundsGroup = new("Camera Bounds", false);
-            TiledMapObjectGroup entitiesGroup = new("Entities", true);
-            TiledMapObjectGroup pickupGroup = new("Pickups", true);
-            TiledMapObjectGroup wallsGroup = new("Walls", true);
+            // Create the layers.
+            TiledMapObjectGroup patrolPointsGroup = tiledMap.AddObjectGroup("Patrol Points");
+            TiledMapObjectGroup cameraBoundsGroup = tiledMap.AddObjectGroup("Camera Bounds", false);
+            TiledMapObjectGroup entitiesGroup = tiledMap.AddObjectGroup("Entities");
+            TiledMapObjectGroup pickupGroup = tiledMap.AddObjectGroup("Pickups");
+            TiledMapObjectGroup wallsGroup = tiledMap.AddObjectGroup("Walls");
 
             // Go over each event group with pickups.
             int sortKey = 0;
@@ -380,17 +351,11 @@ namespace TiledToLB.Core.LegoBattles
 
                 sortKey++;
             }
-
-            tiledMap.AddObjectGroup(patrolPointsGroup);
-            tiledMap.AddObjectGroup(cameraBoundsGroup);
-            tiledMap.AddObjectGroup(entitiesGroup);
-            tiledMap.AddObjectGroup(pickupGroup);
-            tiledMap.AddObjectGroup(wallsGroup);
         }
 
         private static void addTriggers(LegoTilemap legoMap, TiledMap tiledMap)
         {
-            TiledMapObjectGroup triggerGroup = new("Triggers", false);
+            TiledMapObjectGroup triggerGroup = tiledMap.AddObjectGroup("Triggers", false);
 
             int sortKey = 0;
             foreach (TriggerData triggerData in legoMap.TriggerSections)
@@ -420,13 +385,11 @@ namespace TiledToLB.Core.LegoBattles
                 triggerGroup.Objects.Add(areaObject);
                 sortKey++;
             }
-
-            tiledMap.AddObjectGroup(triggerGroup);
         }
 
         private static void addMarkers(LegoTilemap legoMap, TiledMap tiledMap)
         {
-            TiledMapObjectGroup markersGroup = new("Markers", true);
+            TiledMapObjectGroup markersGroup = tiledMap.AddObjectGroup("Markers", true);
 
             int sortKey = 0;
             foreach ((byte markerID, List<MarkerData> markers) in legoMap.MarkerSections)
@@ -452,13 +415,11 @@ namespace TiledToLB.Core.LegoBattles
                 }
                 sortKey++;
             }
-
-            tiledMap.AddObjectGroup(markersGroup);
         }
 
         private static void addMines(LegoTilemap legoMap, TiledMap tiledMap)
         {
-            TiledMapObjectGroup minesGroup = new("Mines", true);
+            TiledMapObjectGroup minesGroup = tiledMap.AddObjectGroup("Mines");
 
             int sortKey = 0;
             foreach (List<Vector2U8> mines in legoMap.Mines)
@@ -481,8 +442,6 @@ namespace TiledToLB.Core.LegoBattles
                 }
                 sortKey++;
             }
-
-            tiledMap.AddObjectGroup(minesGroup);
         }
 
         private static TiledMapObject ToTiledMapObject(this TilemapEntityData entityData, TiledMap tiledMap, int eventID, int sortKey)

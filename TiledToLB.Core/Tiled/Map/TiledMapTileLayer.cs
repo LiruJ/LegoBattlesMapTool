@@ -4,22 +4,22 @@ using System.Xml;
 
 namespace TiledToLB.Core.Tiled.Map
 {
-    public class TiledMapTileLayer()
+    public class TiledMapTileLayer(string name, int width, int height)
     {
         #region Properties
         public int ID { get; set; } = 0;
 
-        public required string Name { get; set; }
+        public string Name { get; set; } = name;
 
-        public int Width { get; set; }
+        public int Width { get; set; } = width;
 
-        public int Height { get; set; }
+        public int Height { get; set; } = height;
 
         public float Opacity { get; set; } = 1f;
 
         public string Encoding { get; set; } = "csv";
 
-        public required int[,] Data { get; init; }
+        public int[,] Data { get; } = new int[width, height];
         #endregion
 
         #region Load Functions
@@ -37,8 +37,14 @@ namespace TiledToLB.Core.Tiled.Map
             if (encoding != "csv")
                 throw new InvalidDataException("Cannot load non-csv layer ID: {id} \"{name}\"!");
 
+            TiledMapTileLayer layer = new(name, width, height)
+            {
+                ID = id,
+                Opacity = opacity,
+                Encoding = encoding,
+            };
+
             string[] dataStrings = dataNode.InnerText.Split(',', StringSplitOptions.TrimEntries);
-            int[,] data = new int[width, height];
             for (int i = 0; i < dataStrings.Length; i++)
             {
                 int x = i % width, y = i / width;
@@ -46,19 +52,10 @@ namespace TiledToLB.Core.Tiled.Map
                 if (!int.TryParse(dataString, out int index))
                     throw new Exception($"Data value at {x},{y} on layer ID: {id} \"{name}\" is invalid!");
 
-                data[x, y] = index;
+                layer.Data[x, y] = index;
             }
 
-            return new()
-            {
-                Name = name,
-                ID = id,
-                Width = width,
-                Height = height,
-                Opacity = opacity,
-                Encoding = encoding,
-                Data = data
-            };
+            return layer;
         }
         #endregion
 

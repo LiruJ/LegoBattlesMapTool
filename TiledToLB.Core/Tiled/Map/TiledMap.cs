@@ -5,15 +5,11 @@ using TiledToLB.Core.Tiled.Tileset;
 
 namespace TiledToLB.Core.Tiled.Map
 {
-    public class TiledMap(int width, int height)
+    public class TiledMap(int width, int height, int tileWidth, int tileHeight)
     {
         #region Constants
         public const string TargetVersion = "1.10";
         public const string TargetTiledVersion = "1.11.0";
-        #endregion
-
-        #region Fields
-
         #endregion
 
         #region Properties
@@ -21,9 +17,9 @@ namespace TiledToLB.Core.Tiled.Map
 
         public int Height { get; } = height;
 
-        public int TileWidth { get; set; }
+        public int TileWidth { get; set; } = tileWidth;
 
-        public int TileHeight { get; set; }
+        public int TileHeight { get; set; } = tileHeight;
 
         public int NextLayerID { get; set; } = 0;
 
@@ -58,6 +54,15 @@ namespace TiledToLB.Core.Tiled.Map
         #endregion
 
         #region Tile Layer Functions
+        public TiledMapTileLayer AddTileLayer(string name) => AddTileLayer(name, Width, Height);
+
+        public TiledMapTileLayer AddTileLayer(string name, int width, int height)
+        {
+            TiledMapTileLayer layer = new(name, width, height);
+            AddTileLayer(layer);
+            return layer;
+        }
+
         public void AddTileLayer(TiledMapTileLayer layer)
         {
             layer.ID = NextLayerID;
@@ -68,8 +73,20 @@ namespace TiledToLB.Core.Tiled.Map
         #endregion
 
         #region Object Group Functions
+        public TiledMapObjectGroup AddObjectGroup(string name, bool visible = true)
+        {
+            TiledMapObjectGroup objectGroup = new(name, visible);
+            AddObjectGroup(objectGroup);
+            return objectGroup;
+        }
+
         public void AddObjectGroup(TiledMapObjectGroup group)
-            => ObjectGroups.Add(group.Name, group);
+        {
+            group.ID = NextLayerID;
+            NextLayerID++;
+
+            ObjectGroups.Add(group.Name, group);
+        }
         #endregion
 
         #region Load Functions
@@ -97,12 +114,10 @@ namespace TiledToLB.Core.Tiled.Map
             byte nextObjectID = byte.TryParse(mapNode.Attributes?["nextobjectid"]?.Value, out value) ? value : (byte)0;
 
             // Create, load, and return the map.
-            TiledMap map = new(width, height)
+            TiledMap map = new(width, height, tileWidth, tileHeight)
             {
                 NextLayerID = nextLayerID,
                 NextObjectID = nextObjectID,
-                TileWidth = tileWidth,
-                TileHeight = tileHeight,
             };
             map.Load(tiledFile);
             return map;
