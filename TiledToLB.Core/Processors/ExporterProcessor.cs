@@ -12,11 +12,12 @@ namespace TiledToLB.Core.Processors
         public static async Task ProcessMapAsync(string inputFilePath, string outputFilePath, bool compressOutput = true, bool silent = true)
         {
             // Load the map.
+            string mapName = Path.GetFileNameWithoutExtension(outputFilePath);
             TiledMap map = TiledMap.Load(inputFilePath);
 
             // Create the output file and save the map to it.
-            using FileStream outputStream = File.Create(outputFilePath);
-            LegoTilemap legoMap = await LegoMapWriter.CreateLegoMapFromTiledMap(map, inputFilePath, outputStream, compressOutput, silent);
+            using FileStream mapOutputStream = File.Create(outputFilePath);
+            LegoTilemap legoMap = await LegoMapWriter.CreateLegoMapFromTiledMap(map, inputFilePath, mapOutputStream, compressOutput, silent);
 
             if (!silent)
                 Console.WriteLine("Saving minimaps");
@@ -27,6 +28,14 @@ namespace TiledToLB.Core.Processors
                 using FileStream minimapOutputStream = File.Create(filePath);
                 await saveFunction(legoMap, minimapOutputStream, includeTrees);
             }
+
+            // Save the detail tiles file, holding the extra tiles used by the specific map.
+            string extraTilesFilename = $"{CommonProcessor.DetailTilesName}_{mapName}.tbp";
+            string extraTilesOutputPath = Path.GetDirectoryName(outputFilePath) is string outputDirectory
+                ? Path.Combine(outputDirectory, extraTilesFilename)
+                : extraTilesFilename;
+            using FileStream extraTilesOutputStream = File.Create(extraTilesOutputPath);
+            await LegoMapWriter.CreateExtraTilesetFromTiledMap(map, inputFilePath, extraTilesOutputStream, compressOutput, silent);
 
             if (!silent)
                 Console.WriteLine("All files saved successfully");
@@ -70,6 +79,17 @@ namespace TiledToLB.Core.Processors
                 minimapOutputStream.CopyTo(minimapEntryStream);
                 minimapEntryStream.Close();
             }
+
+            // Save the extra tileset.
+            using MemoryStream tilesetOutputStream = new(0x1000);
+            await LegoMapWriter.CreateExtraTilesetFromTiledMap(map, inputFilePath, tilesetOutputStream, true, silent);
+
+            // Add the extra tileset to the archive.
+            ZipArchiveEntry tilesetEntry = lbzArchive.CreateEntry("bp/detailtiles_@.tbp");
+            using Stream tilesetEntryStream = tilesetEntry.Open();
+            tilesetOutputStream.Position = 0;
+            tilesetOutputStream.CopyTo(tilesetEntryStream);
+            tilesetEntryStream.Close();
 
             // Add the manifest file to the archive.
             ZipArchiveEntry manifestEntry = lbzArchive.CreateEntry("manifest.toml");

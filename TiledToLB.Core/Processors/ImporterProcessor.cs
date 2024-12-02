@@ -54,10 +54,11 @@ namespace TiledToLB.Core.Processors
                 Console.WriteLine($"Decompressed map. Compressed/decompressed size: 0x{mapFileEntry.Size:X6}/0x{legoMapStream.Length:X6} ({legoMapStream.Length / (float)mapFileEntry.Size:P0} bigger)");
 
             // Get the map's tile NDS file.
-            string mapBPPath = "BP/DetailTiles_" + Path.ChangeExtension(romMapName, "tbp");
+            string mapBPPath = $"BP/{CommonProcessor.DetailTilesName}_{Path.ChangeExtension(romMapName, "tbp")}";
             if (!fileSystem.FilesByPath.TryGetValue(mapBPPath, out NDSFile? mapBPFileEntry) && !silent)
                 Console.WriteLine($"Could not find any blueprints file under {mapBPPath}, skipping extra tiles");
 
+            // Load the map's "block blueprint", the extra tiles.
             MemoryStream? mapBPStream = null;
             if (mapBPFileEntry != null)
             {

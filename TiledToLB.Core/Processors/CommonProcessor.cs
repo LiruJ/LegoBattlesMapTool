@@ -12,6 +12,8 @@
         public const string TemplateTilesetsFolderName = "Tilesets";
 
         public const string OutputFolderName = "Output";
+
+        public const string DetailTilesName = "DetailTiles";
         #endregion
     }
 }

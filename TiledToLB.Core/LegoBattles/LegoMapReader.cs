@@ -91,17 +91,18 @@ namespace TiledToLB.Core.LegoBattles
                 }
 
             // Create the tileset image.
-            extraTileset.SourceImagePath = Path.ChangeExtension(legoMap.MapName, "png");
+            extraTileset.SourceImagePath = Path.ChangeExtension($"{legoMap.MapName}_{CommonProcessor.DetailTilesName}", "png");
             string tilesetImageOutputPath = Path.Combine(workspacePath, CommonProcessor.TemplateTileBlueprintsFolderName, extraTileset.SourceImagePath);
             string miniTilesInputPath = Path.Combine(workspacePath, CommonProcessor.TemplateTilesetsFolderName, Path.ChangeExtension(legoMap.TilesetName, "png"));
             (int sourceWidth, int sourceHeight) = createExtraTilesetImage(miniTilesInputPath, tilesetImageOutputPath, extraTiles);
             extraTileset.SourceImageWidth = sourceWidth;
             extraTileset.SourceImageHeight = sourceHeight;
 
-            createExtraTilesetTilemap(sourceWidth / 8, sourceHeight / 8, workspacePath, $"{legoMap.MapName}_DetailTiles.tsx", legoMap.TilesetName, extraTiles);
+            // Create the tileset tilemap, which helps users add to the detail tiles.
+            createExtraTilesetTilemap(sourceWidth / 8, sourceHeight / 8, workspacePath, $"{legoMap.MapName}_{CommonProcessor.DetailTilesName}", legoMap.TilesetName, extraTiles);
 
             // Add the tileset reference to the map. Note that the path is relative to the map.
-            string tilesetPath = $"../{CommonProcessor.TemplateTileBlueprintsFolderName}/{legoMap.MapName}.tsx";
+            string tilesetPath = $"../{CommonProcessor.TemplateTileBlueprintsFolderName}/{legoMap.MapName}_{CommonProcessor.DetailTilesName}.tsx";
             tiledMap.AddTileset(tilesetPath, TilemapBlockPalette.FactionPaletteCount + 1);
             extraTileset.Save(Path.Combine(workspacePath, CommonProcessor.TemplateMapsFolderName, tilesetPath));
         }
@@ -151,12 +152,14 @@ namespace TiledToLB.Core.LegoBattles
 
         private static void createExtraTilesetTilemap(int widthInMiniTiles, int heightInMiniTiles, string workspacePath, string tilesetName, string baseTilesetName, TilemapBlockPalette extraTiles)
         {
+            // Create the tileset tilemap.
             TiledMap extraTilesetTilemap = new(widthInMiniTiles, heightInMiniTiles)
             {
                 TileWidth = 8,
                 TileHeight = 8,
             };
 
+            // Create the tile layer for the mini tiles.
             TiledMapTileLayer tilesLayer = new()
             {
                 Name = "Mini Tiles",
@@ -165,20 +168,20 @@ namespace TiledToLB.Core.LegoBattles
                 Data = new int[widthInMiniTiles, heightInMiniTiles],
             };
 
+            // Add the mini tiles tileset to the tileset tilemap.
             string miniTilesetName = baseTilesetName[..baseTilesetName.IndexOf('T')] + "MiniTiles.tsx";
             extraTilesetTilemap.AddTileset($"../{CommonProcessor.TemplateTilesetsFolderName}/{miniTilesetName}", 1);
 
+            // Add each tile to the tileset.
             int widthInTiles = widthInMiniTiles / 3;
             for (int i = 0; i < extraTiles.Count; i++)
             {
+                // Get the block and calculate where it should start.
                 TilemapPaletteBlock block = extraTiles[i];
+                int miniTileX = (i % widthInTiles) * 3;
+                int miniTileY = (i / widthInTiles) * 2;
 
-                int x = i % widthInTiles;
-                int y = i / widthInTiles;
-
-                int miniTileX = x * 3;
-                int miniTileY = y * 2;
-
+                // Set the tiles.
                 tilesLayer.Data[miniTileX, miniTileY] = block.TopLeft + 1;
                 tilesLayer.Data[miniTileX + 1, miniTileY] = block.TopMiddle + 1;
                 tilesLayer.Data[miniTileX + 2, miniTileY] = block.TopRight + 1;
@@ -188,6 +191,7 @@ namespace TiledToLB.Core.LegoBattles
                 tilesLayer.Data[miniTileX + 2, miniTileY + 1] = block.BottomRight + 1;
             }
 
+            // Add the tile layer, and save the map.
             extraTilesetTilemap.AddTileLayer(tilesLayer);
             extraTilesetTilemap.Save(Path.Combine(workspacePath, CommonProcessor.TemplateTileBlueprintsFolderName, Path.ChangeExtension(tilesetName, "tmx")));
         }

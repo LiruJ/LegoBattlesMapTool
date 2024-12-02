@@ -4,7 +4,6 @@ using ContentUnpacker.Tilemaps;
 using GlobalShared.DataTypes;
 using GlobalShared.Tilemaps;
 using TiledToLB.Core.LegoBattles.DataStructures;
-using TiledToLB.Core.Processors;
 using TiledToLB.Core.Tiled.Map;
 using TiledToLB.Core.Tiled.Property;
 using TiledToLB.Core.Tiled.Tileset;
@@ -48,6 +47,66 @@ namespace TiledToLB.Core.LegoBattles
                 Console.WriteLine("Map saved successfully");
 
             return legoMap;
+        }
+
+        public static async Task CreateExtraTilesetFromTiledMap(TiledMap tiledMap, string mapPath, Stream outputStream, bool compressOutput, bool silent)
+        {
+            // Load the tileset tilemap.
+            TiledMapTileset extraTilesetMetadata = tiledMap.Tilesets.FirstOrDefault(x => x.FirstGID == TilemapBlockPalette.FactionPaletteCount + 1);
+            if (string.IsNullOrWhiteSpace(extraTilesetMetadata.Source))
+            {
+                if (!silent)
+                    Console.WriteLine("No extra tileset found, skipping");
+                return;
+            }
+            string extraTilesetPath = Path.GetDirectoryName(mapPath) is string mapDirectory
+                ? Path.Combine(mapDirectory, extraTilesetMetadata.Source)
+                : extraTilesetMetadata.Source;
+            TiledMap extraTilesetTilemap = TiledMap.Load(Path.ChangeExtension(extraTilesetPath, "tmx"));
+            TiledTileset extraTileset = TiledTileset.LoadFromFile(Path.ChangeExtension(extraTilesetPath, "tsx"));
+
+            // Try to get the tiles layer. Do nothing if none are found.
+            if (!extraTilesetTilemap.TileLayers.TryGetValue("Mini Tiles", out TiledMapTileLayer? tilesLayer))
+            {
+                if (!silent)
+                    Console.WriteLine("No tile layer in tileset tilemap found, skipping");
+                return;
+            }
+
+            // Set the tiles from the tilemap.
+            int widthInTiles = extraTilesetTilemap.Width / 3;
+            TilemapBlockPalette extraTiles = [];
+            for (int i = 0; i < extraTileset.TileCount; i++)
+            {
+                int miniTileX = (i % widthInTiles) * 3;
+                int miniTileY = (i / widthInTiles) * 2;
+
+                extraTiles.Add(new(
+                    (ushort)(tilesLayer!.Data[miniTileX, miniTileY] - 1),
+                    (ushort)(tilesLayer.Data[miniTileX + 1, miniTileY] - 1),
+                    (ushort)(tilesLayer.Data[miniTileX + 2, miniTileY] - 1),
+                    (ushort)(tilesLayer.Data[miniTileX, miniTileY + 1] - 1),
+                    (ushort)(tilesLayer.Data[miniTileX + 1, miniTileY + 1] - 1),
+                    (ushort)(tilesLayer.Data[miniTileX + 2, miniTileY + 1] - 1)
+                    ));
+            }
+
+            // Save the block palette.
+            if (compressOutput)
+            {
+                if (!silent)
+                    Console.WriteLine("Uncompressed extra tileset saved successfully, now compressing");
+
+                using MemoryStream tilesStream = new(0x1000);
+                extraTiles.SaveToFile(tilesStream);
+                tilesStream.Position = 0;
+                await LegoDecompressor.Encode(tilesStream, outputStream, LZXEncodeType.EWB, 4096);
+            }
+            else
+                extraTiles.SaveToFile(outputStream);
+
+            if (!silent)
+                Console.WriteLine("Extra tileset saved successfully");
         }
 
         private static void setTerrainData(LegoTilemap legoMap, TiledMap tiledMap, string mapPath)
