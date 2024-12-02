@@ -14,8 +14,6 @@ namespace TiledToLB.Core.Processors
             // Load the map.
             TiledMap map = TiledMap.Load(inputFilePath);
 
-            //await LegoDecompressor.Encode("Templates/Output/ck1_1.map", "ck1_1.map", LZXEncodeType.EWB, 4096);
-
             // Create the output file and save the map to it.
             using FileStream outputStream = File.Create(outputFilePath);
             LegoTilemap legoMap = await LegoMapWriter.CreateLegoMapFromTiledMap(map, inputFilePath, outputStream, compressOutput, silent);

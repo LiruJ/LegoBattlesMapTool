@@ -21,6 +21,10 @@ namespace TiledToLB.Core.Tiled.Map
 
         public int Height { get; } = height;
 
+        public int TileWidth { get; set; }
+
+        public int TileHeight { get; set; }
+
         public int NextLayerID { get; set; } = 0;
 
         public int NextObjectID { get; set; } = 0;
@@ -87,6 +91,8 @@ namespace TiledToLB.Core.Tiled.Map
             // Read the size of the map.
             byte width = byte.Parse(mapNode.Attributes?["width"]?.Value ?? throw new InvalidDataException("Tiled file has missing width attribute!"));
             byte height = byte.Parse(mapNode.Attributes?["height"]?.Value ?? throw new InvalidDataException("Tiled file has missing height attribute!"));
+            byte tileWidth = byte.Parse(mapNode.Attributes?["tilewidth"]?.Value ?? throw new InvalidDataException("Tiled file has missing tile width attribute!"));
+            byte tileHeight = byte.Parse(mapNode.Attributes?["tileheight"]?.Value ?? throw new InvalidDataException("Tiled file has missing tile height attribute!"));
             byte nextLayerID = byte.TryParse(mapNode.Attributes?["nextlayerid"]?.Value, out byte value) ? value : (byte)0;
             byte nextObjectID = byte.TryParse(mapNode.Attributes?["nextobjectid"]?.Value, out value) ? value : (byte)0;
 
@@ -94,7 +100,9 @@ namespace TiledToLB.Core.Tiled.Map
             TiledMap map = new(width, height)
             {
                 NextLayerID = nextLayerID,
-                NextObjectID = nextObjectID
+                NextObjectID = nextObjectID,
+                TileWidth = tileWidth,
+                TileHeight = tileHeight,
             };
             map.Load(tiledFile);
             return map;
@@ -192,8 +200,8 @@ namespace TiledToLB.Core.Tiled.Map
             mapNode.AddAttribute("renderorder", "right-down");
             mapNode.AddAttribute("width", Width);
             mapNode.AddAttribute("height", Height);
-            mapNode.AddAttribute("tilewidth", 24);
-            mapNode.AddAttribute("tileheight", 16);
+            mapNode.AddAttribute("tilewidth", TileWidth);
+            mapNode.AddAttribute("tileheight", TileHeight);
             mapNode.AddAttribute("infinite", 0);
             mapNode.AddAttribute("nextlayerid", NextLayerID);
             mapNode.AddAttribute("nextobjectid", NextObjectID);

@@ -22,16 +22,6 @@ namespace TiledToLB.Core.Tiled.Map
         public required int[,] Data { get; init; }
         #endregion
 
-        #region Construros
-        public TiledMapTileLayer(string name, int width, int height) : this()
-        {
-            Name = name;
-            Width = width;
-            Height = height;
-            Data = new int[Width, Height];
-        }
-        #endregion
-
         #region Load Functions
         public static TiledMapTileLayer LoadFromNode(XmlNode node)
         {
