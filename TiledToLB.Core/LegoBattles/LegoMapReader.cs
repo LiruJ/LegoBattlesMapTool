@@ -31,6 +31,7 @@ namespace TiledToLB.Core.LegoBattles
             };
 
             tiledMap.Properties.Add("Name", mapName);
+            tiledMap.Properties.Add("Creator", "Hellbent Games");
             tiledMap.Properties.Add("ReplacesMPIndex", 0);
             tiledMap.Properties.Add("Tileset", legoMap.TilesetName);
 

@@ -99,6 +99,8 @@ namespace TiledToLB.Core.Processors
             // Write the manifest file.
             manifestWriter.WriteLine($"type = \"map\"");
             manifestWriter.WriteLine($"name = \"{(map.Properties.TryGetValue("Name", out TiledProperty nameProperty) ? nameProperty.Value : mapName)}\"");
+            if (map.Properties.TryGetValue("Creator", out TiledProperty creatorProperty))
+                manifestWriter.WriteLine($"creator = \"{creatorProperty.Value}\"");
             manifestWriter.WriteLine($"args = [ \"mp{(map.Properties.TryGetValue("ReplacesMPIndex", out TiledProperty mpIndexProperty) ? int.Parse(mpIndexProperty.Value) : 0):00}\" ]");
         }
     }
