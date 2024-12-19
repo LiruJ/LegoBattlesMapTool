@@ -277,17 +277,21 @@ namespace TiledToLB.Core.LegoBattles
             foreach (TriggerData triggerData in legoMap.TriggerSections)
             {
                 TiledMapObject areaObject = tiledMap.CreateObject(triggerGroup);
+                areaObject.Type = "Trigger";
                 areaObject.SetPositionAndSizeFromRectU8(triggerData.Area);
                 areaObject.SetTriggerIDAndSortKey(triggerData.ID, sortKey);
 
-                areaObject.Properties.Add("HasData", triggerData.HasData);
-                areaObject.Properties.Add("TargetUnitIndex", triggerData.TargetUnitIndex);
-                areaObject.Properties.Add("TargetUnitType", (int)triggerData.TargetUnitType);
-                areaObject.Properties.Add("TargetFactionIndex", triggerData.TargetFactionIndex);
-                areaObject.Properties.Add("TargetTeam", triggerData.TargetTeam);
+                if (triggerData.HasData)
+                {
+                    areaObject.Properties.Add("HasData", triggerData.HasData);
+                    areaObject.Properties.Add("TargetUnitIndex", triggerData.TargetUnitIndex);
+                    areaObject.Properties.Add("TargetUnitType", (int)triggerData.TargetUnitType);
+                    areaObject.Properties.Add("TargetFactionIndex", triggerData.TargetFactionIndex);
+                    areaObject.Properties.Add("TargetTeam", triggerData.TargetTeam);
 
-                areaObject.Properties.Add("Unknown1", triggerData.Unknown1);
-                areaObject.Properties.Add("Unknown2", triggerData.Unknown2);
+                    areaObject.Properties.Add("Unknown1", triggerData.Unknown1);
+                    areaObject.Properties.Add("Unknown2", triggerData.Unknown2);
+                }
 
                 sortKey++;
             }
@@ -303,45 +307,21 @@ namespace TiledToLB.Core.LegoBattles
                 foreach (MarkerData markerData in markers)
                 {
                     TiledMapObject markerObject = tiledMap.CreateObject(markersGroup);
-                    markerObject.SetPositionCentredPoint(markerData.Position);
+                    markerObject.Type = "Marker";
                     markerObject.SetMarkerIDAndSortKey(markerID, sortKey);
 
-                    markerObject.Properties.Add("UnknownBool", markerData.UnknownBool);
+                    if (markerData.UnknownBool)
+                        markerObject.Properties.Add("UnknownBool", markerData.UnknownBool);
 
                     // Bridges should have a width and height.
                     if (markerID == 7 || markerID == 8)
                     {
-                        // Remove the offset.
-                        markerObject.X -= 12f;
-                        markerObject.Y -= 8f;
-
-                        // Horizontal bridges.
-                        if (markerID == 7)
-                        {
-                            markerObject.Width = 0;
-                            markerObject.Height = 2 * 16f;
-
-                            int x = markerData.Position.X;
-                            while (x < legoMap.Width && legoMap.TileData[(markerData.Position.Y * legoMap.Width) + x].TileType == TileType.Water)
-                            {
-                                markerObject.Width += 24f;
-                                x++;
-                            }
-                        }
-                        // Vertical bridges.
-                        else
-                        {
-                            markerObject.Width = 2 * 24f;
-                            markerObject.Height = 0;
-
-                            int y = markerData.Position.Y;
-                            while (y < legoMap.Height && legoMap.TileData[(y * legoMap.Width) + markerData.Position.X].TileType == TileType.Water)
-                            {
-                                markerObject.Height += 16f;
-                                y++;
-                            }
-                        }
+                        markerObject.SetPositionTopLeftPoint(markerData.Position);
+                        (markerObject.Width, markerObject.Height) = Helpers.CalculateBridgeSize(legoMap, markerID == 7, markerData.Position.X, markerData.Position.Y);
                     }
+                    // Everything else can just be a point.
+                    else                    
+                        markerObject.SetPositionCentredPoint(markerData.Position);
                 }
                 sortKey++;
             }

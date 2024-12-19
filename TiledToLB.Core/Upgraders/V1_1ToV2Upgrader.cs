@@ -140,6 +140,9 @@ namespace TiledToLB.Core.Upgraders
                 map.ObjectGroups.Remove("Bridges");
                 bridgesGroup = null;
             }
+
+            foreach (TiledMapObject markerObject in markersGroup.Objects)
+                markerObject.Type = "Marker";
         }
 
         private static void upgradeMines(TiledMap map)

@@ -10,148 +10,232 @@
     ],
     "properties": [
     ],
-    "propertyTypes": [
+  "propertyTypes": [
+    {
+      "color": "#ffa0a0a4",
+      "drawFill": true,
+      "id": 2,
+      "members": [
         {
-            "color": "#ffa0a0a4",
-            "drawFill": true,
-            "id": 2,
-            "members": [
-                {
-                    "name": "EventID",
-                    "type": "int",
-                    "value": 0
-                },
-                {
-                    "name": "ExtraData0",
-                    "type": "int",
-                    "value": 0
-                },
-                {
-                    "name": "ExtraData1",
-                    "type": "int",
-                    "value": 0
-                },
-                {
-                    "name": "ExtraData2",
-                    "type": "int",
-                    "value": 0
-                },
-                {
-                    "name": "SortKey",
-                    "type": "int",
-                    "value": 0
-                },
-                {
-                    "name": "StartHealth",
-                    "type": "float",
-                    "value": 1
-                },
-                {
-                    "name": "SubType",
-                    "type": "int",
-                    "value": 0
-                },
-                {
-                    "name": "TeamIndex",
-                    "type": "int",
-                    "value": 0
-                },
-                {
-                    "name": "Type",
-                    "propertyType": "EntityType",
-                    "type": "int",
-                    "value": 0
-                }
-            ],
-            "name": "Entity",
-            "type": "class",
-            "useAs": [
-                "property",
-                "object",
-                "project"
-            ]
+          "name": "EventID",
+          "type": "int",
+          "value": 0
         },
         {
-            "id": 1,
-            "name": "EntityType",
-            "storageType": "int",
-            "type": "enum",
-            "values": [
-                "Hero",
-                "Builder",
-                "Melee",
-                "Ranged",
-                "Mounted",
-                "Transport",
-                "Special",
-                "Base",
-                "Harvester",
-                "Mine",
-                "Farm",
-                "Barracks",
-                "SpecialFactory",
-                "Tower",
-                "Tower2",
-                "Tower3",
-                "Shipyard",
-                "Bridge",
-                "Gate",
-                "Wall",
-                "Pickup"
-            ],
-            "valuesAsFlags": false
+          "name": "ExtraData0",
+          "type": "int",
+          "value": 0
         },
         {
-            "id": 3,
-            "name": "Tileset",
-            "storageType": "string",
-            "type": "enum",
-            "values": [
-                "MarsTileset",
-                "KingTileset",
-                "PirateTileset"
-            ],
-            "valuesAsFlags": false
+          "name": "ExtraData1",
+          "type": "int",
+          "value": 0
         },
         {
-            "id": 5,
-            "name": "TileType",
-            "storageType": "int",
-            "type": "enum",
-            "values": [
-                "Grass",
-                "Unused",
-                "Stone",
-                "Water",
-                "Unused2",
-                "Mountain"
-            ],
-            "valuesAsFlags": false
+          "name": "ExtraData2",
+          "type": "int",
+          "value": 0
         },
         {
-            "color": "#ffa0a0a4",
-            "drawFill": true,
-            "id": 4,
-            "members": [
-                {
-                    "name": "TreeData",
-                    "type": "int",
-                    "value": 0
-                },
-                {
-                    "name": "Type",
-                    "propertyType": "TileType",
-                    "type": "int",
-                    "value": 0
-                }
-            ],
-            "name": "TypedTile",
-            "type": "class",
-            "useAs": [
-                "property",
-                "tile",
-                "project"
-            ]
+          "name": "SortKey",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "StartHealth",
+          "type": "float",
+          "value": 1
+        },
+        {
+          "name": "SubType",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "TeamIndex",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "Type",
+          "propertyType": "EntityType",
+          "type": "int",
+          "value": 0
         }
-    ]
+      ],
+      "name": "Entity",
+      "type": "class",
+      "useAs": [
+        "property",
+        "object",
+        "project"
+      ]
+    },
+    {
+      "color": "#ffa0a0a4",
+      "drawFill": true,
+      "id": 6,
+      "members": [
+        {
+          "name": "MarkerID",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "SortKey",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "UnknownBool",
+          "type": "bool",
+          "value": false
+        }
+      ],
+      "name": "Marker",
+      "type": "class",
+      "useAs": [
+        "object"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "EntityType",
+      "storageType": "int",
+      "type": "enum",
+      "values": [
+        "Hero",
+        "Builder",
+        "Melee",
+        "Ranged",
+        "Mounted",
+        "Transport",
+        "Special",
+        "Base",
+        "Harvester",
+        "Mine",
+        "Farm",
+        "Barracks",
+        "SpecialFactory",
+        "Tower",
+        "Tower2",
+        "Tower3",
+        "Shipyard",
+        "Bridge",
+        "Gate",
+        "Wall",
+        "Pickup"
+      ],
+      "valuesAsFlags": false
+    },
+    {
+      "id": 3,
+      "name": "Tileset",
+      "storageType": "string",
+      "type": "enum",
+      "values": [
+        "MarsTileset",
+        "KingTileset",
+        "PirateTileset"
+      ],
+      "valuesAsFlags": false
+    },
+    {
+      "id": 5,
+      "name": "TileType",
+      "storageType": "int",
+      "type": "enum",
+      "values": [
+        "Grass",
+        "Unused",
+        "Stone",
+        "Water",
+        "Unused2",
+        "Mountain"
+      ],
+      "valuesAsFlags": false
+    },
+    {
+      "color": "#ffa0a0a4",
+      "drawFill": true,
+      "id": 8,
+      "members": [
+        {
+          "name": "HasData",
+          "type": "bool",
+          "value": false
+        },
+        {
+          "name": "SortKey",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "TargetFactionIndex",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "TargetTeam",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "TargetUnitIndex",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "TargetUnitType",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "TriggerID",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "Unknown1",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "Unknown2",
+          "type": "int",
+          "value": 0
+        }
+      ],
+      "name": "Trigger",
+      "type": "class",
+      "useAs": [
+        "object"
+      ]
+    },
+    {
+      "color": "#ffa0a0a4",
+      "drawFill": true,
+      "id": 4,
+      "members": [
+        {
+          "name": "TreeData",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "Type",
+          "propertyType": "TileType",
+          "type": "int",
+          "value": 0
+        }
+      ],
+      "name": "TypedTile",
+      "type": "class",
+      "useAs": [
+        "property",
+        "tile",
+        "project"
+      ]
+    }
+  ]
 }

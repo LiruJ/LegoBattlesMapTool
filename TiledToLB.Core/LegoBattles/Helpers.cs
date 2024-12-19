@@ -1,6 +1,7 @@
 ﻿using ContentUnpacker.DataTypes;
 using ContentUnpacker.Tilemaps;
 using GlobalShared.DataTypes;
+using GlobalShared.Tilemaps;
 using TiledToLB.Core.Tiled.Map;
 using TiledToLB.Core.Tiled.Property;
 
@@ -80,7 +81,7 @@ namespace TiledToLB.Core.LegoBattles
 
         public static EntityType GetEntityType(this TiledMapObject entityObject, EntityType defaultTo) => entityObject.Properties.GetEntityType(defaultTo);
 
-        public static EntityType GetEntityType(this TiledPropertyCollection properties, EntityType defaultTo) 
+        public static EntityType GetEntityType(this TiledPropertyCollection properties, EntityType defaultTo)
             => properties.TryGetValue("Type", out TiledProperty typeProperty) && int.TryParse(typeProperty.Value, out int typeValue)
                 ? (EntityType)typeValue
                 : defaultTo;
@@ -138,6 +139,39 @@ namespace TiledToLB.Core.LegoBattles
             EntityType.Pickup => (12, 8, 0, 0),
             _ => (0, 0, 0, 0)
         };
+
+        public static (int width, int height) CalculateBridgeSize(LegoTilemap legoMap, bool isHorizontal, int bridgePositionX, int bridgePositionY)
+        {
+            int width, height;
+
+            // Horizontal bridges.
+            if (isHorizontal)
+            {
+                width = 0;
+                height = 2 * 16;
+
+                int x = bridgePositionX;
+                while (x < legoMap.Width && legoMap.TileData[(bridgePositionY * legoMap.Width) + x].TileType == TileType.Water)
+                {
+                    width += 24;
+                    x++;
+                }
+            }
+            // Vertical bridges.
+            else
+            {
+                width = 2 * 24;
+                height = 0;
+
+                int y = bridgePositionY;
+                while (y < legoMap.Height && legoMap.TileData[(y * legoMap.Width) + bridgePositionX].TileType == TileType.Water)
+                {
+                    height += 16;
+                    y++;
+                }
+            }
+            return (width, height);
+        }
 
         public static void SetSizeFromTiles(this TiledMapObject entityObject, int widthInTiles, int heightInTiles)
         {
