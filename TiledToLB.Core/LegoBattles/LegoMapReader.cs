@@ -259,7 +259,7 @@ namespace TiledToLB.Core.LegoBattles
                 foreach (Tuple<Vector2U8, byte> wallData in eventData.Walls)
                 {
                     TiledMapObject wallObject = tiledMap.CreateObject(wallsGroup);
-                    wallObject.SetPositionCentredPoint(wallData.Item1);
+                    wallObject.SetPositionTopLeftPoint(wallData.Item1);
                     wallObject.SetSizeFromTiles(1, 1);
                     wallObject.SetTeamIndex(wallData.Item2);
                     wallObject.SetEventIDAndSortKey(eventData.ID, sortKey);

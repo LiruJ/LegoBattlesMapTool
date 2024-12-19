@@ -10,7 +10,7 @@ namespace TiledToLB.Core.Processors
 {
     public static class CreateNewProcessor
     {
-        public static Task CreateNewAsync(string outputDirectoryPath, string mapName, string tilesetName, string creatorName, bool silent)
+        public static Task CreateNewAsync(string workspacePath, string mapName, string tilesetName, string creatorName, bool silent)
         {
             // Normalise the tileset name and ensure it's valid.
             if (!normaliseTilesetName(ref tilesetName))
@@ -21,13 +21,13 @@ namespace TiledToLB.Core.Processors
 
             // Create the map and add the layers.
             TiledMap tiledMap = new(64, 64, 24, 16);
-            createTilesets(tiledMap, outputDirectoryPath, mapName, tilesetName);
+            createTilesets(tiledMap, workspacePath, mapName, tilesetName);
             setProperties(tiledMap, mapName, tilesetName, creatorName);
             createTerrainLayers(tiledMap);
             createEntityLayers(tiledMap);
 
             // Save the map.
-            string mapOutputFilePath = Path.Combine(outputDirectoryPath, CommonProcessor.TemplateMapsFolderName, Path.ChangeExtension(mapName, "tmx"));
+            string mapOutputFilePath = Path.Combine(workspacePath, CommonProcessor.TemplateMapsFolderName, Path.ChangeExtension(mapName, "tmx"));
             tiledMap.Save(mapOutputFilePath);
             return Task.CompletedTask;
         }
@@ -41,7 +41,7 @@ namespace TiledToLB.Core.Processors
             tiledMap.Properties.Add("Tileset", tilesetName);
         }
 
-        private static void createTilesets(TiledMap tiledMap, string outputDirectoryPath, string mapName, string tilesetName)
+        private static void createTilesets(TiledMap tiledMap, string workspacePath, string mapName, string tilesetName)
         {
             string extraTilesetName = $"{CommonProcessor.DetailTilesName}_{mapName}";
 
@@ -51,21 +51,21 @@ namespace TiledToLB.Core.Processors
 
             // Create empty tileset files.
             TiledTileset tileset = new();
-            tileset.Save(Path.Combine(outputDirectoryPath, CommonProcessor.TemplateTileBlueprintsFolderName, $"{extraTilesetName}.tsx"));
+            tileset.Save(Path.Combine(workspacePath, CommonProcessor.TemplateTileBlueprintsFolderName, $"{extraTilesetName}.tsx"));
 
             const int widthInTiles = 16;
             const int heightInTiles = 8;
 
             TiledMap tilesetMap = new(widthInTiles * 3, heightInTiles * 2, 8, 8);
             tilesetMap.AddTileLayer("Mini Tiles");
-            tilesetMap.Save(Path.Combine(outputDirectoryPath, CommonProcessor.TemplateTileBlueprintsFolderName, $"{extraTilesetName}.tmx"));
+            tilesetMap.Save(Path.Combine(workspacePath, CommonProcessor.TemplateTileBlueprintsFolderName, $"{extraTilesetName}.tmx"));
 
             // Add the mini tiles tileset to the tileset tilemap.
             string miniTilesetName = tilesetName[..tilesetName.IndexOf('T')] + "MiniTiles.tsx";
             tilesetMap.AddTileset($"../{CommonProcessor.TemplateTilesetsFolderName}/{miniTilesetName}", 1);
 
             using Image<Rgba32> tilesetImage = new(widthInTiles * 24, heightInTiles * 16, new Rgba32(0, 0, 0, 0));
-            tilesetImage.Save(Path.Combine(outputDirectoryPath, CommonProcessor.TemplateTileBlueprintsFolderName, $"{extraTilesetName}.png"));
+            tilesetImage.Save(Path.Combine(workspacePath, CommonProcessor.TemplateTileBlueprintsFolderName, $"{extraTilesetName}.png"));
         }
 
         private static void createTerrainLayers(TiledMap tiledMap)

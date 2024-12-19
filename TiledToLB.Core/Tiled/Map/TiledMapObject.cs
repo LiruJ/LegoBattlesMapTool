@@ -83,7 +83,7 @@ namespace TiledToLB.Core.Tiled.Map
 
             node.AddAttribute("x", X);
             node.AddAttribute("y", Y);
-            if (Width != null && Height != null)
+            if (Width != null && Width != 0 && Height != null && Height != 0)
             {
                 node.AddAttribute("width", Width);
                 node.AddAttribute("height", Height);
