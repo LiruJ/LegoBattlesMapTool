@@ -90,6 +90,21 @@ namespace TiledToLB.Core.Tiled.Property
 
         public void Add(TiledProperty property)
             => properties.Add(property.Name, property);
+
+        public void Set(string name, string value)
+            => properties[name] = new TiledProperty(name, value, TiledPropertyType.String, null);
+
+        public void Set(string name, int value)
+            => properties[name] = new TiledProperty(name, value.ToString(), TiledPropertyType.Int, null);
+
+        public void Set(string name, float value)
+            => properties[name] = new TiledProperty(name, value.ToString(), TiledPropertyType.Float, null);
+
+        public void Set(string name, bool value)
+            => properties[name] = new TiledProperty(name, value.ToString(), TiledPropertyType.Bool, null);
+
+        public void Set(TiledProperty property)
+            => properties[property.Name] = property;
         #endregion
 
         #region Load Functions

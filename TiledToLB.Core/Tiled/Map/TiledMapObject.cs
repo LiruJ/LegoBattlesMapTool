@@ -5,7 +5,7 @@ using TiledToLB.Core.Tiled.Property;
 
 namespace TiledToLB.Core.Tiled.Map
 {
-    public struct TiledMapObject()
+    public class TiledMapObject()
     {
         #region Properties
         public int ID { get; set; }
@@ -18,9 +18,9 @@ namespace TiledToLB.Core.Tiled.Map
 
         public float Y { get; set; }
 
-        public float? Width { get; set; }
+        public float? Width { get; set; } = null;
 
-        public float? Height { get; set; }
+        public float? Height { get; set; } = null;
 
         public TiledPropertyCollection Properties { get; } = [];
 
@@ -28,7 +28,7 @@ namespace TiledToLB.Core.Tiled.Map
         #endregion
 
         #region Polyline Functions
-        public readonly void AddPolylinePoint(float x, float y)
+        public void AddPolylinePoint(float x, float y)
         {
             PolylinePoints.Add(x);
             PolylinePoints.Add(y);
@@ -71,7 +71,7 @@ namespace TiledToLB.Core.Tiled.Map
         #endregion
 
         #region Save Functions
-        public readonly void SaveToNode(XmlNode parentNode)
+        public void SaveToNode(XmlNode parentNode)
         {
             XmlNode node = parentNode.OwnerDocument!.CreateElement("object");
 

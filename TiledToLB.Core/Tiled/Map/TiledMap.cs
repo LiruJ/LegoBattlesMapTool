@@ -87,6 +87,23 @@ namespace TiledToLB.Core.Tiled.Map
 
             ObjectGroups.Add(group.Name, group);
         }
+
+        public TiledMapObject CreateObject(TiledMapObjectGroup group)
+        {
+            TiledMapObject mapObject = CreateObject();
+            group.Objects.Add(mapObject);
+            return mapObject;
+        }
+
+        public TiledMapObject CreateObject()
+        {
+            TiledMapObject mapObject = new()
+            {
+                ID = NextObjectID
+            };
+            NextObjectID++;
+            return mapObject;
+        }
         #endregion
 
         #region Load Functions

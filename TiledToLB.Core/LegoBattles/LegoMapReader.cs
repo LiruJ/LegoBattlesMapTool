@@ -1,6 +1,5 @@
 ﻿using ContentUnpacker.DataTypes;
 using ContentUnpacker.Tilemaps;
-using GlobalShared.DataTypes;
 using GlobalShared.Tilemaps;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -27,6 +26,7 @@ namespace TiledToLB.Core.LegoBattles
             TiledMap tiledMap = new(legoMap.Width, legoMap.Height, 24, 16);
 
             tiledMap.Properties.Add("Name", mapName);
+            tiledMap.Properties.Add("ToolVersion", typeof(LegoMapReader).Assembly.GetName().Version?.ToString() ?? "0.0.0");
             tiledMap.Properties.Add("Creator", "Hellbent Games");
             tiledMap.Properties.Add("ReplacesMPIndex", 0);
             tiledMap.Properties.Add("Tileset", legoMap.TilesetName);
@@ -215,138 +215,54 @@ namespace TiledToLB.Core.LegoBattles
                 int? patrolPointID = null;
                 if (eventData.PatrolPoints.Count > 0)
                 {
-                    Vector2 origin = new(eventData.PatrolPoints[0].X, eventData.PatrolPoints[0].Y);
-                    TiledMapObject patrolPointObject = new()
-                    {
-                        ID = tiledMap.NextObjectID,
-                        X = (origin.X * 24f) + 12f,
-                        Y = (origin.Y * 16f) + 8f,
-                        Width = null,
-                        Height = null,
-                    };
-                    tiledMap.NextObjectID++;
+                    TiledMapObject patrolPointObject = tiledMap.CreateObject(patrolPointsGroup);
+                    patrolPointObject.SetPositionCentredPoint(eventData.PatrolPoints[0]);
+                    patrolPointObject.SetEventIDAndSortKey(eventData.ID, sortKey);
+
+                    // Save the patrol point ID so the other events can link to it.
                     patrolPointID = patrolPointObject.ID;
 
-                    patrolPointObject.Properties.Add("EventID", eventData.ID);
-                    patrolPointObject.Properties.Add("SortKey", sortKey);
-
+                    // Create a polyline with the points.
+                    Vector2 origin = new(eventData.PatrolPoints[0].X, eventData.PatrolPoints[0].Y);
                     foreach (Vector2U8 point in eventData.PatrolPoints)
                     {
                         Vector2 position = new(((point.X - origin.X) * 24f), ((point.Y - origin.Y) * 16f));
                         patrolPointObject.AddPolylinePoint(position.X, position.Y);
                     }
-
-                    patrolPointsGroup.Objects.Add(patrolPointObject);
                 }
 
                 // Camera bounds.
                 if (eventData.CameraBounds != null)
                 {
-                    TiledMapObject cameraBoundsObject = new()
-                    {
-                        ID = tiledMap.NextObjectID,
-                        X = eventData.CameraBounds.Value.MinX * 24f,
-                        Y = eventData.CameraBounds.Value.MinY * 16f,
-                        Width = ((eventData.CameraBounds.Value.MaxX + 1) - eventData.CameraBounds.Value.MinX) * 24f,
-                        Height = ((eventData.CameraBounds.Value.MaxY + 1) - eventData.CameraBounds.Value.MinY) * 16f,
-                    };
-
-                    cameraBoundsObject.Properties.Add("EventID", eventData.ID);
-                    cameraBoundsObject.Properties.Add("SortKey", sortKey);
-
-                    cameraBoundsGroup.Objects.Add(cameraBoundsObject);
+                    TiledMapObject cameraBoundsObject = tiledMap.CreateObject(cameraBoundsGroup);
+                    cameraBoundsObject.SetPositionAndSizeFromRectU8(eventData.CameraBounds.Value);
+                    cameraBoundsObject.SetEventIDAndSortKey(eventData.ID, sortKey);
                 }
 
                 // Entities.
                 foreach (TilemapEntityData entityData in eventData.EntityData)
                 {
-                    TiledMapObject entityObject = entityData.ToTiledMapObject(tiledMap, eventData.ID, sortKey);
+                    TiledMapObject entityObject = Helpers.CreateEntityFrom(entityData, tiledMap, entitiesGroup, eventData.ID, sortKey);
 
-                    entityObject.Name = entityData.TypeIndex.ToString();
-                    entityObject.Properties.Add(new TiledProperty("TeamIndex", entityData.TeamIndex.ToString(), TiledPropertyType.Int, null));
-                    entityObject.Properties.Add(new TiledProperty("StartHealth", (entityData.HealthPercent / 100f).ToString(), TiledPropertyType.Float, null));
+                    entityObject.SetTeamIndex(entityData.TeamIndex);
+                    entityObject.Properties.Set("StartHealth", entityData.HealthPercent / 100f);
 
                     if (patrolPointID != null)
-                        entityObject.Properties.Add(new TiledProperty("PatrolPoint", patrolPointID.Value.ToString(), TiledPropertyType.Object, null));
-
-                    switch (entityData.TypeIndex)
-                    {
-                        case EntityType.Base:
-                            entityObject.X -= 12f;
-                            entityObject.Y -= 8f;
-                            entityObject.Width = 24 * 3;
-                            entityObject.Height = 16 * 3;
-                            break;
-                        case EntityType.Harvester:
-                        case EntityType.Mine:
-                        case EntityType.Farm:
-                        case EntityType.Barracks:
-                        case EntityType.SpecialFactory:
-                        case EntityType.Shipyard:
-                            entityObject.X -= 12f;
-                            entityObject.Y -= 8f;
-                            entityObject.Width = 24 * 2;
-                            entityObject.Height = 16 * 2;
-                            break;
-                        case EntityType.Gate:
-                        case EntityType.Wall:
-                        case EntityType.Tower:
-                        case EntityType.Tower2:
-                        case EntityType.Tower3:
-                            entityObject.X -= 12f;
-                            entityObject.Y -= 8f;
-                            entityObject.Width = 24;
-                            entityObject.Height = 16;
-                            break;
-                        case EntityType.Bridge:
-                        case EntityType.Pickup:
-                        case EntityType.Hero:
-                        case EntityType.Builder:
-                        case EntityType.Melee:
-                        case EntityType.Ranged:
-                        case EntityType.Mounted:
-                        case EntityType.Transport:
-                        case EntityType.Special:
-                        default:
-                            break;
-                    }
-
-                    entitiesGroup.Objects.Add(entityObject);
+                        entityObject.Properties.Add("PatrolPoint", patrolPointID.Value);
                 }
 
                 // Pickups.
                 foreach (TilemapEntityData pickupData in eventData.PickupData)
-                {
-                    TiledMapObject pickupObject = pickupData.ToTiledMapObject(tiledMap, eventData.ID, sortKey);
-                    pickupObject.Name = pickupData.SubTypeIndex switch
-                    {
-                        5 => "Red Brick",
-                        6 => "Minikit",
-                        7 => "Blue Stud",
-                        8 => "Golden Brick",
-                        _ => "Mission Pickup",
-                    };
-                    pickupGroup.Objects.Add(pickupObject);
-                }
+                    Helpers.CreateEntityFrom(pickupData, tiledMap, pickupGroup, eventData.ID, sortKey);
 
                 // Walls.
                 foreach (Tuple<Vector2U8, byte> wallData in eventData.Walls)
                 {
-                    TiledMapObject wallObject = new()
-                    {
-                        ID = tiledMap.NextObjectID,
-                        X = wallData.Item1.X * 24f,
-                        Y = wallData.Item1.Y * 16f,
-                        Width = 24f,
-                        Height = 16f,
-                    };
-                    tiledMap.NextObjectID++;
-
-                    wallObject.Properties.Add("TeamIndex", wallData.Item2);
-                    wallObject.Properties.Add("EventID", eventData.ID);
-                    wallObject.Properties.Add("SortKey", sortKey);
-
-                    wallsGroup.Objects.Add(wallObject);
+                    TiledMapObject wallObject = tiledMap.CreateObject(wallsGroup);
+                    wallObject.SetPositionCentredPoint(wallData.Item1);
+                    wallObject.SetSizeFromTiles(1, 1);
+                    wallObject.SetTeamIndex(wallData.Item2);
+                    wallObject.SetEventIDAndSortKey(eventData.ID, sortKey);
                 }
 
                 sortKey++;
@@ -360,18 +276,9 @@ namespace TiledToLB.Core.LegoBattles
             int sortKey = 0;
             foreach (TriggerData triggerData in legoMap.TriggerSections)
             {
-                TiledMapObject areaObject = new()
-                {
-                    ID = tiledMap.NextObjectID,
-                    X = triggerData.Area.MinX * 24f,
-                    Y = triggerData.Area.MinY * 16f,
-                    Width = ((triggerData.Area.MaxX + 1) - triggerData.Area.MinX) * 24f,
-                    Height = ((triggerData.Area.MaxY + 1) - triggerData.Area.MinY) * 16f,
-                };
-                tiledMap.NextObjectID++;
-
-                areaObject.Properties.Add("TriggerID", triggerData.ID);
-                areaObject.Properties.Add("SortKey", sortKey);
+                TiledMapObject areaObject = tiledMap.CreateObject(triggerGroup);
+                areaObject.SetPositionAndSizeFromRectU8(triggerData.Area);
+                areaObject.SetTriggerIDAndSortKey(triggerData.ID, sortKey);
 
                 areaObject.Properties.Add("HasData", triggerData.HasData);
                 areaObject.Properties.Add("TargetUnitIndex", triggerData.TargetUnitIndex);
@@ -382,7 +289,6 @@ namespace TiledToLB.Core.LegoBattles
                 areaObject.Properties.Add("Unknown1", triggerData.Unknown1);
                 areaObject.Properties.Add("Unknown2", triggerData.Unknown2);
 
-                triggerGroup.Objects.Add(areaObject);
                 sortKey++;
             }
         }
@@ -396,22 +302,46 @@ namespace TiledToLB.Core.LegoBattles
             {
                 foreach (MarkerData markerData in markers)
                 {
-                    TiledMapObject markerObject = new()
-                    {
-                        ID = tiledMap.NextObjectID,
-                        X = (markerData.Position.X * 24f) + 12f,
-                        Y = (markerData.Position.Y * 16f) + 8f,
-                        Width = null,
-                        Height = null,
-                    };
-                    tiledMap.NextObjectID++;
-
-                    markerObject.Properties.Add("SortKey", sortKey);
-                    markerObject.Properties.Add("MarkerID", markerID);
+                    TiledMapObject markerObject = tiledMap.CreateObject(markersGroup);
+                    markerObject.SetPositionCentredPoint(markerData.Position);
+                    markerObject.SetMarkerIDAndSortKey(markerID, sortKey);
 
                     markerObject.Properties.Add("UnknownBool", markerData.UnknownBool);
 
-                    markersGroup.Objects.Add(markerObject);
+                    // Bridges should have a width and height.
+                    if (markerID == 7 || markerID == 8)
+                    {
+                        // Remove the offset.
+                        markerObject.X -= 12f;
+                        markerObject.Y -= 8f;
+
+                        // Horizontal bridges.
+                        if (markerID == 7)
+                        {
+                            markerObject.Width = 0;
+                            markerObject.Height = 2 * 16f;
+
+                            int x = markerData.Position.X;
+                            while (x < legoMap.Width && legoMap.TileData[(markerData.Position.Y * legoMap.Width) + x].TileType == TileType.Water)
+                            {
+                                markerObject.Width += 24f;
+                                x++;
+                            }
+                        }
+                        // Vertical bridges.
+                        else
+                        {
+                            markerObject.Width = 2 * 24f;
+                            markerObject.Height = 0;
+
+                            int y = markerData.Position.Y;
+                            while (y < legoMap.Height && legoMap.TileData[(y * legoMap.Width) + markerData.Position.X].TileType == TileType.Water)
+                            {
+                                markerObject.Height += 16f;
+                                y++;
+                            }
+                        }
+                    }
                 }
                 sortKey++;
             }
@@ -426,46 +356,13 @@ namespace TiledToLB.Core.LegoBattles
             {
                 foreach (Vector2U8 minePosition in mines)
                 {
-                    TiledMapObject mineObject = new()
-                    {
-                        ID = tiledMap.NextObjectID,
-                        X = minePosition.X * 24f,
-                        Y = minePosition.Y * 16f,
-                        Width = 24f * 2,
-                        Height = 16f * 2,
-                    };
-                    tiledMap.NextObjectID++;
-
-                    mineObject.Properties.Add("SortKey", sortKey);
-
-                    minesGroup.Objects.Add(mineObject);
+                    TiledMapObject mineObject = tiledMap.CreateObject(minesGroup);
+                    mineObject.SetPositionTopLeftPoint(minePosition);
+                    mineObject.SetSizeFromTiles(2, 2);
+                    mineObject.SetSortKey(sortKey);
                 }
                 sortKey++;
             }
-        }
-
-        private static TiledMapObject ToTiledMapObject(this TilemapEntityData entityData, TiledMap tiledMap, int eventID, int sortKey)
-        {
-            TiledMapObject entityObject = new()
-            {
-                ID = tiledMap.NextObjectID,
-                X = (entityData.X * 24f) + 12f,
-                Y = (entityData.Y * 16f) + 8f,
-                Width = null,
-                Height = null,
-                Type = "Entity",
-            };
-            tiledMap.NextObjectID++;
-
-            entityObject.Properties.Add("EventID", eventID);
-            entityObject.Properties.Add("SortKey", sortKey);
-            entityObject.Properties.Add(new TiledProperty("Type", ((int)entityData.TypeIndex).ToString(), TiledPropertyType.Int, "EntityType"));
-            entityObject.Properties.Add("SubType", entityData.SubTypeIndex);
-
-            for (int i = 0; i < entityData.ExtraData.Length; i++)
-                entityObject.Properties.Add($"ExtraData{i}", entityData.ExtraData[i]);
-
-            return entityObject;
         }
     }
 }

@@ -1,18 +1,10 @@
-﻿using GlobalShared.Tilemaps;
-using SixLabors.ImageSharp.PixelFormats;
+﻿using GlobalShared.DataTypes;
+using GlobalShared.Tilemaps;
 using SixLabors.ImageSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SixLabors.ImageSharp.PixelFormats;
+using TiledToLB.Core.LegoBattles;
 using TiledToLB.Core.Tiled.Map;
 using TiledToLB.Core.Tiled.Tileset;
-using System.Globalization;
-using TiledToLB.Core.Tiled.Property;
-using System.Runtime.InteropServices;
-using GlobalShared.DataTypes;
-using System.Reflection.Metadata.Ecma335;
 
 namespace TiledToLB.Core.Processors
 {
@@ -42,6 +34,7 @@ namespace TiledToLB.Core.Processors
         private static void setProperties(TiledMap tiledMap, string mapName, string tilesetName, string creatorName)
         {
             tiledMap.Properties.Add("Name", Path.GetFileNameWithoutExtension(mapName));
+            tiledMap.Properties.Add("ToolVersion", typeof(CreateNewProcessor).Assembly.GetName().Version?.ToString() ?? "0.0.0");
             tiledMap.Properties.Add("Creator", string.IsNullOrWhiteSpace(creatorName) ? Environment.UserName : creatorName);
             tiledMap.Properties.Add("ReplacesMPIndex", 0);
             tiledMap.Properties.Add("Tileset", tilesetName);
@@ -109,16 +102,8 @@ namespace TiledToLB.Core.Processors
             TiledMapObjectGroup markersGroup = tiledMap.AddObjectGroup("Markers", false);
             TiledMapObjectGroup minesGroup = tiledMap.AddObjectGroup("Mines");
 
-            TiledMapObject mine = new()
-            {
-                X = 31 * 24,
-                Y = 31 * 16,
-                Width = 2 * 24,
-                Height = 2 * 16,
-                ID = tiledMap.NextObjectID
-            };
-            tiledMap.NextObjectID++;
-            minesGroup.Objects.Add(mine);
+            TiledMapObject mine = tiledMap.CreateObject(minesGroup);
+            mine.SetPositionTopLeftPoint(31, 31);
 
             // Create the bases.
             createBase(tiledMap, entitiesGroup, 4, 3, 0, 0);
@@ -135,49 +120,39 @@ namespace TiledToLB.Core.Processors
 
         private static void createGoldenBrick(TiledMap tiledMap, TiledMapObjectGroup pickupGroup, int x, int y, int sortKey)
         {
-            TiledMapObject pickup = new()
-            {
-                X = (x * 24) + 12,
-                Y = (y * 16) + 8,
-                ID = tiledMap.NextObjectID,
-                Type = "Entity",
-            };
-            tiledMap.NextObjectID++;
-            pickupGroup.Objects.Add(pickup);
+            TiledMapObject pickup = tiledMap.CreateObject(pickupGroup);
+            pickup.SetPositionCentredPoint(x, y);
+            pickup.Type = "Entity";
 
-            pickup.Properties.Add("EventID", 0);
-            pickup.Properties.Add("SortKey", sortKey);
-            pickup.Properties.Add(new TiledProperty("Type", ((int)EntityType.Pickup).ToString(), TiledPropertyType.Int, "EntityType"));
-            pickup.Properties.Add("SubType", 8);
+            pickup.Name = Helpers.CalculateName(EntityType.Pickup, 8);
+            pickup.SetEventIDAndSortKey(0, sortKey);
+            pickup.SetEntityType(EntityType.Pickup, 8);
         }
 
         private static void createBase(TiledMap tiledMap, TiledMapObjectGroup entitiesGroup, int startX, int startY, int sortKey, int teamIndex)
         {
-            TiledMapObject createObject(int x, int y, int width, int height, EntityType entityType)
+            TiledMapObject createObject(int x, int y, EntityType entityType)
             {
-                TiledMapObject entityObject = new()
-                {
-                    X = x * 24,
-                    Y = y * 16,
-                    Width = width * 24,
-                    Height = height * 16,
-                    ID = tiledMap.NextObjectID,
-                    Type = "Entity",
-                };
-                entityObject.Properties.Add("EventID", 0);
-                entityObject.Properties.Add("SortKey", sortKey);
-                entityObject.Properties.Add(new TiledProperty("Type", ((int)entityType).ToString(), TiledPropertyType.Int, "EntityType"));
-                entityObject.Properties.Add("SubType", 0);
-                entityObject.Properties.Add("TeamIndex", teamIndex);
-                tiledMap.NextObjectID++;
-                entitiesGroup.Objects.Add(entityObject);
+                TiledMapObject entityObject = tiledMap.CreateObject(entitiesGroup);
+                entityObject.Type = "Entity";
 
+                entityObject.SetPositionTopLeftPoint(startX, startY);
+                (int offsetX, int offsetY, int width, int height) = Helpers.CalculateOffsetAndSize(entityType);
+                entityObject.X += offsetX;
+                entityObject.Y += offsetY;
+                entityObject.Width = width;
+                entityObject.Height = height;
+
+                entityObject.Name = Helpers.CalculateName(entityType, 0);
+                entityObject.SetSortKey(sortKey);
+                entityObject.SetEntityType(entityType);
+                entityObject.SetTeamIndex(teamIndex);
                 return entityObject;
             }
 
-            createObject(startX, startY, 3, 3, EntityType.Base);
-            createObject(startX - 1, startY + 4, 2, 2, EntityType.Farm);
-            createObject(startX + 2, startY + 4, 2, 2, EntityType.Farm);
+            createObject(startX, startY, EntityType.Base);
+            createObject(startX - 1, startY + 4, EntityType.Farm);
+            createObject(startX + 2, startY + 4, EntityType.Farm);
         }
 
         private static bool normaliseTilesetName(ref string tilesetName)
