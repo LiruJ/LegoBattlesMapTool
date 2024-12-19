@@ -49,7 +49,7 @@ namespace TiledToLB.Core.Processors
             Directory.CreateDirectory(Path.Combine(templateOutputPath, CommonProcessor.TemplateMapsFolderName));
             Directory.CreateDirectory(Path.Combine(templateOutputPath, CommonProcessor.TemplateTileBlueprintsFolderName));
             Directory.CreateDirectory(Path.Combine(templateOutputPath, CommonProcessor.TemplateTilesetsFolderName));
-            Directory.CreateDirectory(Path.Combine(templateOutputPath, CommonProcessor.OutputFolderName));
+            Directory.CreateDirectory(Path.Combine(templateOutputPath, CommonProcessor.TemplateOutputFolderName));
         }
 
         private static void unpackResources(string templateOutputPath)

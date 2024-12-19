@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TiledToLB.Core.Tiled.Map;
+﻿using TiledToLB.Core.Tiled.Map;
 using TiledToLB.Core.Tiled.Property;
 using TiledToLB.Core.Upgraders;
 
@@ -11,8 +6,9 @@ namespace TiledToLB.Core.Processors
 {
     public static class UpgradeProcessor
     {
-        public static async Task UpgradeExistingAsync(string filePath, bool silent)
+        public static Task UpgradeExistingAsync(string workspacePath, string mapName, bool silent)
         {
+            string filePath = Path.Combine(workspacePath, CommonProcessor.TemplateMapsFolderName, Path.ChangeExtension(mapName, "tmx"));
             TiledMap map = TiledMap.Load(filePath);
 
             // Get the version of the map, and the version of the tool. If the map has no version, assume it's 0.0.0.
@@ -23,7 +19,7 @@ namespace TiledToLB.Core.Processors
             if (mapVersion.Major == currentVersion.Major && mapVersion.Minor == currentVersion.Minor)
             {
                 Console.WriteLine($"Map is already the most recent version, {currentVersion}");
-                return;
+                return Task.CompletedTask;
             }
 
             // One day, when there are multiple versions, this will be a chain of upgrades, starting at the map's version and ending at the current version. This way, every old map version will be supported.
@@ -32,6 +28,7 @@ namespace TiledToLB.Core.Processors
 
             // Save the map.
             map.Save(filePath);
+            return Task.CompletedTask;
         }
     }
 }

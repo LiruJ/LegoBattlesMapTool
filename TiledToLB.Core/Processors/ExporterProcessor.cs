@@ -9,13 +9,15 @@ namespace TiledToLB.Core.Processors
 {
     public static class ExporterProcessor
     {
-        public static async Task ProcessMapAsync(string inputFilePath, string outputFilePath, bool compressOutput = true, bool silent = true)
+        public static async Task ProcessMapAsync(string workspacePath, string inputMapName, string outputMapName, bool compressOutput = true, bool silent = true)
         {
             // Load the map.
-            string mapName = Path.GetFileNameWithoutExtension(outputFilePath);
+            string mapName = Path.GetFileNameWithoutExtension(outputMapName);
+            string inputFilePath = Path.Combine(workspacePath, CommonProcessor.TemplateMapsFolderName, Path.ChangeExtension(inputMapName, "tmx"));
             TiledMap map = TiledMap.Load(inputFilePath);
 
             // Create the output file and save the map to it.
+            string outputFilePath = Path.Combine(workspacePath, CommonProcessor.TemplateOutputFolderName, Path.ChangeExtension(outputMapName, "map"));
             using FileStream mapOutputStream = File.Create(outputFilePath);
             LegoTilemap legoMap = await LegoMapWriter.CreateLegoMapFromTiledMap(map, inputFilePath, mapOutputStream, compressOutput, silent);
 
@@ -41,11 +43,13 @@ namespace TiledToLB.Core.Processors
                 Console.WriteLine("All files saved successfully");
         }
 
-        public static async Task ProcessAndPackLBZAsync(string inputFilePath, string outputFilePath, bool silent = true)
+        public static async Task ProcessAndPackLBZAsync(string workspacePath, string inputMapName, string outputMapName, bool silent = true)
         {
             // Load the map.
+            string inputFilePath = Path.Combine(workspacePath, CommonProcessor.TemplateMapsFolderName, Path.ChangeExtension(inputMapName, "tmx"));
             TiledMap map = TiledMap.Load(inputFilePath);
 
+            string outputFilePath = Path.Combine(workspacePath, CommonProcessor.TemplateOutputFolderName, outputMapName);
             string mapName = Path.GetFileNameWithoutExtension(outputFilePath);
             string? outputDirectoryPath = Path.GetDirectoryName(outputFilePath);
 

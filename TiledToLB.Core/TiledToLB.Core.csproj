@@ -71,9 +71,6 @@
     <None Update="WorkspaceTemplate\LegoBattles.tiled-session">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="WorkspaceTemplate\Maps\Roundabout.tmx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ItemGroup>

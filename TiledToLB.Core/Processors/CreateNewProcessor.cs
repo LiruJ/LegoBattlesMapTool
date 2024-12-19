@@ -10,13 +10,13 @@ namespace TiledToLB.Core.Processors
 {
     public static class CreateNewProcessor
     {
-        public static async Task CreateNewAsync(string outputDirectoryPath, string mapName, string tilesetName, string creatorName, bool silent)
+        public static Task CreateNewAsync(string outputDirectoryPath, string mapName, string tilesetName, string creatorName, bool silent)
         {
             // Normalise the tileset name and ensure it's valid.
             if (!normaliseTilesetName(ref tilesetName))
             {
                 Console.WriteLine("Invalid tileset!");
-                return;
+                return Task.CompletedTask;
             }
 
             // Create the map and add the layers.
@@ -29,6 +29,7 @@ namespace TiledToLB.Core.Processors
             // Save the map.
             string mapOutputFilePath = Path.Combine(outputDirectoryPath, CommonProcessor.TemplateMapsFolderName, Path.ChangeExtension(mapName, "tmx"));
             tiledMap.Save(mapOutputFilePath);
+            return Task.CompletedTask;
         }
 
         private static void setProperties(TiledMap tiledMap, string mapName, string tilesetName, string creatorName)
