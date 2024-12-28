@@ -11,4 +11,36 @@ await parseResult.WithParsedAsync<UnpackOptions>(async options => await Unpacker
 await parseResult.WithParsedAsync<ImportFromRomOptions>(async options => await ImporterProcessor.ImportMapFromRomAsync(options.InputFilePath, options.WorkspaceDirectoryPath, options.RomMapName, options.OutputMapName, options.Silent));
 await parseResult.WithParsedAsync<UpgradeExistingOptions>(async options => await UpgradeProcessor.UpgradeExistingAsync(options.WorkspaceDirectoryPath, options.MapName, options.Silent));
 
-await parseResult.WithNotParsedAsync((errors) => Console.Out.WriteLineAsync("Error parsing inputs!"));
+await parseResult.WithNotParsedAsync((errors) =>
+{
+	foreach (Error error in errors)
+	{
+		// At some point, maybe certain errors need specific handling. But the default console output is already pretty good.
+		switch (error.Tag)
+		{
+            // No real error, does not need any output.
+            case ErrorType.HelpRequestedError:
+            case ErrorType.HelpVerbRequestedError:
+            case ErrorType.VersionRequestedError:
+                break;
+            case ErrorType.BadFormatTokenError:
+			case ErrorType.MissingValueOptionError:
+			case ErrorType.UnknownOptionError:
+			case ErrorType.MissingRequiredOptionError:
+			case ErrorType.MutuallyExclusiveSetError:
+			case ErrorType.BadFormatConversionError:
+			case ErrorType.SequenceOutOfRangeError:
+			case ErrorType.RepeatedOptionError:
+			case ErrorType.NoVerbSelectedError:
+			case ErrorType.BadVerbSelectedError:
+			case ErrorType.SetValueExceptionError:
+			case ErrorType.InvalidAttributeConfigurationError:
+			case ErrorType.MissingGroupOptionError:
+			case ErrorType.GroupOptionAmbiguityError:
+			case ErrorType.MultipleDefaultVerbsError:
+			default:
+				break;
+		}
+	}
+	return Task.CompletedTask;
+});
