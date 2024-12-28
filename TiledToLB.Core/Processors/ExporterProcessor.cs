@@ -89,7 +89,7 @@ namespace TiledToLB.Core.Processors
             await LegoMapWriter.CreateExtraTilesetFromTiledMap(map, inputFilePath, tilesetOutputStream, true, silent);
 
             // Add the extra tileset to the archive.
-            ZipArchiveEntry tilesetEntry = lbzArchive.CreateEntry("bp/detailtiles_@.tbp");
+            ZipArchiveEntry tilesetEntry = lbzArchive.CreateEntry("detailtiles/detailtiles_@.tbp");
             using Stream tilesetEntryStream = tilesetEntry.Open();
             tilesetOutputStream.Position = 0;
             tilesetOutputStream.CopyTo(tilesetEntryStream);
