@@ -53,7 +53,7 @@ namespace TiledToLB.Core.LegoBattles.DataStructures
         #region Helper Functions
         private static IDictionary<byte, List<TiledMapObject>>? groupLayerByEventID(IEnumerable<TiledMapObject>? layerObjects)
             => layerObjects?
-                .GroupBy(x => (byte)x.Properties.GetOrDefault("EventID", byte.MaxValue))
+                .GroupBy(x => (byte)x.Properties.GetOrDefault("EventID", 0))
                 .ToDictionary(x => x.Key, x => x.ToList());
         #endregion
     }
