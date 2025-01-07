@@ -93,6 +93,12 @@ namespace TiledToLB.Core.Upgraders
                         entityObject.Properties.Set("ExtraData0", 1);
                         entityObject.Properties.Set("ExtraData1", 1);
                         entityObject.Properties.Set("ExtraData2", 1);
+
+                        int sortKey = 1;
+                        if (entityObject.Properties.TryGetValue("TeamIndex", out TiledProperty teamIndexProperty) && int.TryParse(teamIndexProperty.Value, out int teamIndex))
+                            sortKey = teamIndex + 1;
+
+                        entityObject.Properties.Set("SortKey", sortKey);
                         break;
                     case EntityType.Bridge:
                     case EntityType.Gate:
@@ -113,8 +119,9 @@ namespace TiledToLB.Core.Upgraders
                         entitiesGroup.Objects.RemoveAt(i);
                         break;
                 }
-
             }
+
+
         }
 
         private static void upgradeMarkers(TiledMap map)
