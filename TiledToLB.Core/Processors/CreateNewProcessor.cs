@@ -107,10 +107,10 @@ namespace TiledToLB.Core.Processors
             mine.SetPositionTopLeftPoint(31, 31);
 
             // Create the bases.
-            createBase(tiledMap, entitiesGroup, 4, 3, 0, 0);
-            createBase(tiledMap, entitiesGroup, 57, 3, 1, 2);
-            createBase(tiledMap, entitiesGroup, 4, 55, 2, 1);
-            createBase(tiledMap, entitiesGroup, 57, 55, 3, 3);
+            createBase(tiledMap, entitiesGroup, 4, 3, 0, 7, 0, 0);
+            createBase(tiledMap, entitiesGroup, 57, 3, 0, 7, 1, 2);
+            createBase(tiledMap, entitiesGroup, 4, 55, 0, -3, 2, 1);
+            createBase(tiledMap, entitiesGroup, 57, 55, 0, -3, 3, 3);
 
             // Create the golden bricks.
             createGoldenBrick(tiledMap, pickupGroup, 60, 31, 4);
@@ -130,7 +130,7 @@ namespace TiledToLB.Core.Processors
             pickup.SetEntityType(EntityType.Pickup, 8);
         }
 
-        private static void createBase(TiledMap tiledMap, TiledMapObjectGroup entitiesGroup, int startX, int startY, int sortKey, int teamIndex)
+        private static void createBase(TiledMap tiledMap, TiledMapObjectGroup entitiesGroup, int startX, int startY, int unitsOffsetX, int unitsOffsetY, int sortKey, int teamIndex)
         {
             TiledMapObject createObject(int x, int y, EntityType entityType)
             {
@@ -139,8 +139,8 @@ namespace TiledToLB.Core.Processors
 
                 entityObject.SetPositionTopLeftPoint(startX, startY);
                 (int offsetX, int offsetY, int width, int height) = Helpers.CalculateOffsetAndSize(entityType);
-                entityObject.X += offsetX;
-                entityObject.Y += offsetY;
+                entityObject.X = (x * 24) + offsetX;
+                entityObject.Y = (y * 16) + offsetY;
                 entityObject.Width = width;
                 entityObject.Height = height;
 
@@ -151,9 +151,15 @@ namespace TiledToLB.Core.Processors
                 return entityObject;
             }
 
+            // Create the base and farms.
             createObject(startX, startY, EntityType.Base);
             createObject(startX - 1, startY + 4, EntityType.Farm);
             createObject(startX + 2, startY + 4, EntityType.Farm);
+
+            // Create the hero and two builders.
+            createObject((startX + unitsOffsetX) + 1, startY + unitsOffsetY, EntityType.Hero);
+            createObject(startX + unitsOffsetX, (startY + unitsOffsetY) + 1, EntityType.Builder);
+            createObject((startX + unitsOffsetX) + 2, (startY + unitsOffsetY) + 1, EntityType.Builder);
         }
 
         private static bool normaliseTilesetName(ref string tilesetName)
