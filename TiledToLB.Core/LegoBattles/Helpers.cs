@@ -79,6 +79,12 @@ namespace TiledToLB.Core.LegoBattles
         public static void SetEntityType(this TiledMapObject entityObject, EntityType entityType)
             => entityObject.Properties.Set(new TiledProperty("Type", ((int)entityType).ToString(), TiledPropertyType.Int, "EntityType"));
 
+        public static void SetExtraData(this TiledMapObject entityObject, params byte[] data)
+        {
+            for (int i = 0; i < data.Length; i++)
+                entityObject.Properties.Set($"ExtraData{i}", data[i]);
+        }
+
         public static EntityType GetEntityType(this TiledMapObject entityObject, EntityType defaultTo) => entityObject.Properties.GetEntityType(defaultTo);
 
         public static EntityType GetEntityType(this TiledPropertyCollection properties, EntityType defaultTo)
@@ -104,9 +110,7 @@ namespace TiledToLB.Core.LegoBattles
             entityObject.Height = height;
 
             entityObject.SetEntityType(entityData.TypeIndex, entityData.SubTypeIndex);
-
-            for (int i = 0; i < entityData.ExtraData.Length; i++)
-                entityObject.Properties.Set($"ExtraData{i}", entityData.ExtraData[i]);
+            entityObject.SetExtraData(entityData.ExtraData);
 
             return entityObject;
         }

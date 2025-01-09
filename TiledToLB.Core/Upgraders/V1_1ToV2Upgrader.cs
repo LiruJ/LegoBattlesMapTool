@@ -90,9 +90,7 @@ namespace TiledToLB.Core.Upgraders
                     case EntityType.Farm:
                     case EntityType.SpecialFactory:
                     case EntityType.Shipyard:
-                        entityObject.Properties.Set("ExtraData0", 1);
-                        entityObject.Properties.Set("ExtraData1", 1);
-                        entityObject.Properties.Set("ExtraData2", 1);
+                        entityObject.SetExtraData(1, 1, 1);
 
                         int sortKey = 1;
                         if (entityObject.Properties.TryGetValue("TeamIndex", out TiledProperty teamIndexProperty) && int.TryParse(teamIndexProperty.Value, out int teamIndex))
@@ -111,9 +109,7 @@ namespace TiledToLB.Core.Upgraders
                     case EntityType.Pickup:
                         entityObject.Name = "Golden Brick";
                         entityObject.Properties.Set("SubType", 8);
-                        entityObject.Properties.Set("ExtraData0", 2);
-                        entityObject.Properties.Set("ExtraData1", 1);
-                        entityObject.Properties.Set("ExtraData2", 0);
+                        entityObject.SetExtraData(2, 1, 0);
 
                         pickupGroup.Objects.Add(entityObject);
                         entitiesGroup.Objects.RemoveAt(i);

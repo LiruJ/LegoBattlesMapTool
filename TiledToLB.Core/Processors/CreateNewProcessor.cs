@@ -148,12 +148,14 @@ namespace TiledToLB.Core.Processors
                 entityObject.SetSortKey(sortKey);
                 entityObject.SetEntityType(entityType);
                 entityObject.SetTeamIndex(teamIndex);
+                entityObject.SetExtraData(1, 1, 1);
+
                 return entityObject;
             }
 
             // Create the base and farms.
             createObject(startX, startY, EntityType.Base);
-            createObject(startX - 1, startY + 4, EntityType.Farm);
+            createObject(startX - 1, startY + 4, EntityType.Barracks);
             createObject(startX + 2, startY + 4, EntityType.Farm);
 
             // Create the hero and two builders.
