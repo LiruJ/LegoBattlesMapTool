@@ -285,7 +285,7 @@ namespace TiledToLB.Core.LegoBattles
                             {
                                 X = (byte)MathF.Floor(entityObject.X / 24f),
                                 Y = (byte)MathF.Floor(entityObject.Y / 16f),
-                                HealthPercent = (byte)Math.Clamp(MathF.Floor(entityObject.Properties.GetOrDefault("StartHealth", 1.0f)) * 100, 0, 100),
+                                HealthPercent = (byte)Math.Clamp(MathF.Floor(entityObject.Properties.GetOrDefault("StartHealth", 1.0f) * 100), 0, 100),
                                 TeamIndex = (byte)entityObject.Properties.GetOrDefault("TeamIndex", 0),
                                 TypeIndex = (EntityType)entityObject.Properties.GetOrDefault("Type", (byte)EntityType.Melee),
                                 SubTypeIndex = (byte)entityObject.Properties.GetOrDefault("SubType", 0),
